@@ -1,0 +1,5 @@
+# Secrets
+.env
+
+# Testing Only
+start.bat
