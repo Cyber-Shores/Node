@@ -53,7 +53,6 @@ module.exports.run = async (bot, msg, args) => {
         msg.channel.send(succesembed);
         setTimeout(() => {
             if(!USER.roles.cache.has(ROLE.id)) return;
-            console.log('Made it')
             USER.roles.remove(ROLE);
             let unmuteembed = new Discord.MessageEmbed({
                 title: `**Unmute`,
