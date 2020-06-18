@@ -112,7 +112,7 @@ module.exports.help = {
     name: "weather",
     reqPerms: [],
     description: "Posts an info box about the weather conditions of a provided city. (WIP)",
-    usage: `${config.pref}weather [location]${config.suff} || ${config.pref}weather [lat] [long]${config.suff}`,
+    usage: `${config.pref}weather [location]${config.suff}` /*|| ${config.pref}weather [lat] [long]${config.suff}`*/,
     aliases: ['w', 'temperature', 'temp', 'conditions']
 }
 // "https://cdn4.iconfinder.com/data/icons/weather-line-set/24/icn-weather-scattered-showers-512.png"

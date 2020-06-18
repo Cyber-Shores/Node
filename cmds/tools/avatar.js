@@ -22,6 +22,6 @@ module.exports.help = {
     name: "avatar",
     reqPerms: [],
     description: "Posts the avatar / icon of the message author, a provided user, or the server.",
-    usage: `${config.pref}avatar${config.suff} \\|\\| ${config.pref}avatar [users tag]${config.suff} \\|\\| ${config.pref}avatar server${config.suff}`,
+    usage: `${config.pref}avatar${config.suff} \\|\\| ${config.pref}avatar [users-mention]${config.suff} \\|\\| ${config.pref}avatar server${config.suff}`,
     aliases: ['icon', 'pfp', 'profilePic']
 }
