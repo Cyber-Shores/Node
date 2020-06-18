@@ -30,8 +30,6 @@ module.exports.run = async (client, msg, args) => {
     })
     channelmention.send(embed)
 
-    console.log(`${channelmention.name} Was unlocked by ${msg.author.tag}`)
-
 }
 
 

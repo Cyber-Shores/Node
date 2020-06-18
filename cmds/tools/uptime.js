@@ -25,8 +25,6 @@ h < 10 ? h = `0${h}`: h = `${h}`
     });
     msg.channel.send(embed);
 
-    console.log(`Up Time command Logged! ${msg.author.tag}`)
-
 }
     
 

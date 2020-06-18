@@ -24,7 +24,6 @@ module.exports.run = async (client, msg, args) => {
             msg.channel.send(kickembed)
           })
 
-    console.log(`${msg.author.tag} Kicked ${user.tag}`)
 }}
 
 module.exports.help = {

@@ -26,7 +26,6 @@ module.exports.run = async (client, msg, args, bot) => {
             msg.channel.send(banembed)
           })
 
-    console.log(`${msg.author.tag} Banned ${user.tag}`)
 }}
 
 module.exports.help = {
