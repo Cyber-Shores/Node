@@ -36,7 +36,7 @@ module.exports.run = async (client, msg, args) => {
 
 module.exports.help = {
     name: "unlock",
-    reqPerms: [],
+    reqPerms: ["MANAGE_MESSAGES"],
     description: "Unlock a channel",
     usage: `${config.pref}unlock [channel-mention]${config.suff}`,
     aliases: []

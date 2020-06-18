@@ -24,7 +24,7 @@ module.exports.run = async (bot, msg, args) => {
 
 module.exports.help = {
     name: "unmute",
-    reqPerms: ['ADMINISTRATOR'],
+    reqPerms: ['MANAGE_MESSAGES'],
     description: "Unmutes a specified user!",
     usage: `${config.pref}unmute [user]${config.suff}`,
     aliases: []

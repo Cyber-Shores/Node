@@ -28,7 +28,7 @@ module.exports.run = async (client, msg, args) => {
 
 module.exports.help = {
     name: "kick",
-    reqPerms: [],
+    reqPerms: ['KICK_MEMBERS'],
     description: "Kicks a user",
     usage: `${config.pref}kick [user-mention]${config.suff}`,
     aliases: []

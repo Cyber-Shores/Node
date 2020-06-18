@@ -72,7 +72,7 @@ module.exports.run = async (bot, msg, args) => {
 
 module.exports.help = {
     name: "mute",
-    reqPerms: ['ADMINISTRATOR'],
+    reqPerms: ['MANAGE_MESSAGES'],
     description: "Mutes a specified user!",
     usage: `${config.pref}mute [optional-time] [user-mention]${config.suff}`,
     aliases: []
