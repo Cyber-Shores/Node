@@ -1,5 +1,5 @@
 const Discord = module.require('discord.js')
-const settings = module.require("../../config.json");
+const config = module.require("../../config.json");
 const randomPuppy = require('random-puppy');
 module.exports.run = async (client, msg, args) => {
     if(!args[0]) return msg.channel.send('Please provide a subreddit name')
@@ -33,6 +33,6 @@ module.exports.help = {
     name: "reddit",
     reqPerms: [],
     description: "Gets a post from a subreddit",
-    usage: `${settings.prefix}reddit <subreddit name without r/>`,
+    usage: `${config.pref}reddit${config.suff} <subreddit name without r/>`,
     aliases: ['r/']
 }

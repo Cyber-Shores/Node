@@ -1,4 +1,4 @@
-const settings = module.require("../../config.json");
+const config = module.require("../../config.json");
 const Discord = module.require('discord.js');
 module.exports.run = async (client, msg, args) => {
 
@@ -34,6 +34,6 @@ module.exports.help = {
     name: "uptime",
     reqPerms: [''],
     description: "Shows the uptime of the bot",
-    usage: `${settings.prefix}uptime`,
+    usage: `${config.pref}uptime${config.suff}`,
     aliases: ['']
 }

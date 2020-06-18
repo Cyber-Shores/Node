@@ -1,4 +1,4 @@
-const settings = module.require("../../config.json");
+const config = module.require("../../config.json");
 module.exports.run = async (client, msg, args, bot) => {
     let user = msg.mentions.users.first()
     let member = msg.guild.member(user);
@@ -28,6 +28,6 @@ module.exports.help = {
     name: "ban",
     reqPerms: ["BAN_MEMBERS"],
     description: "Bans a user",
-    usage: `${settings.prefix}ban <usertag>`,
+    usage: `${config.pref}ban${config.suff} <usertag>`,
     aliases: ['']
 }

@@ -1,4 +1,4 @@
-const settings = module.require("../../config.json");
+const config = module.require("../../config.json");
 module.exports.run = async (client, msg, args) => {
     let user = msg.mentions.users.first()
     let member = msg.guild.member(user);
@@ -6,9 +6,9 @@ module.exports.run = async (client, msg, args) => {
     
     msg.delete()
     
-    if(!user) return msg.channel.send(`\`\`\`No User Was Mentioned\`\`\``)
-    if(!msg.member.hasPermission("KICK_MEMBERS")) return msg.channel.send("```❌ You do not have the proper permissions.```");
-    if(user.id === msg.author.id) return msg.channel.send("```❌ You cannot kick yourself```");
+    if(!user) return require('../../util/errMsg.js').run(bot, msg, true, "Please mention a user.");
+    if(!msg.member.hasPermission("KICK_MEMBERS")) return require('../../util/errMsg.js').run(bot, msg, false, "You do not have proper premissions.");
+    if(user.id === msg.author.id) return require('../../util/errMsg.js').run(bot, msg, false, "You do not have proper premissions.");
     if(member.roles.highest.position >= msg.member.roles.highest.position) return msg.channel.send(`\`\`\`❌ You cannot kick ${user.username} because they have higher roles than you\`\`\``);
     
     if (member) {
@@ -26,6 +26,6 @@ module.exports.help = {
     name: "kick",
     reqPerms: [],
     description: "Kicks a user",
-    usage: `${settings.prefix}kick <usertag>`,
+    usage: `${config.pref}kick${config.suff} <usertag>`,
     aliases: ['']
 }

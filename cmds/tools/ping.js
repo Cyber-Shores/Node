@@ -1,4 +1,4 @@
-const settings = module.require("../../config.json");
+const config = module.require("../../config.json");
 const Discord = module.require('discord.js');
 module.exports.run = async (client, msg, args) => {
     let pingingembed = new Discord.MessageEmbed({
@@ -30,6 +30,6 @@ module.exports.help = {
     name: "ping",
     reqPerms: [],
     description: "Gets Bot Ping",
-    usage: `${settings.prefix}ping`,
+    usage: `${config.pref}ping${config.suff}`,
     aliases: ['']
 }

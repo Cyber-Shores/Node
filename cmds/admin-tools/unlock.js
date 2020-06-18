@@ -1,4 +1,4 @@
-const settings = module.require("../../config.json");
+const config = module.require("../../config.json");
 const Discord = module.require('discord.js')
 module.exports.run = async (client, msg, args) => {
 
@@ -38,6 +38,6 @@ module.exports.help = {
     name: "unlock",
     reqPerms: [],
     description: "Unlock a channel",
-    usage: `${settings.prefix}unlock <channel mention>`,
+    usage: `${config.pref}unlock${config.suff} <channel mention>`,
     aliases: ['']
 }

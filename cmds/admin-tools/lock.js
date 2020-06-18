@@ -1,4 +1,4 @@
-const settings = module.require("../../config.json");
+const config = module.require("../../config.json");
 const Discord = module.require('discord.js');
 module.exports.run = async (client, msg, args) => {
 
@@ -7,8 +7,8 @@ module.exports.run = async (client, msg, args) => {
     let channelmention =  msg.mentions.channels.first()
 
     //simple check for permissions and mention
-    if(!msg.member.hasPermission("MANAGE_MESSAGES")) return msg.channel.send("```❌ You do not have the proper permissions.```");
-    if(!channelmention) return msg.channel.send(`\`\`\`No Channel Was Mentioned\`\`\``)
+    if(!msg.member.hasPermission("MANAGE_MESSAGES")) return require('../../util/errMsg.js').run(bot, msg, false, "You do not have proper premissions.");
+    if(!channelmention) return require('../../util/errMsg.js').run(bot, msg, true, "Please mention a channel");
     //the actual overwrite itself
     channelmention.overwritePermissions([
         {
@@ -39,6 +39,6 @@ module.exports.help = {
     name: "lock",
     reqPerms: [],
     description: "Locks a channel",
-    usage: `${settings.prefix}lock <channel mention> <reason>`,
+    usage: `${config.pref}lock${config.suff} <channel mention> <reason>`,
     aliases: ['']
 }
