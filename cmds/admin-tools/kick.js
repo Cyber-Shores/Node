@@ -30,6 +30,6 @@ module.exports.help = {
     name: "kick",
     reqPerms: [],
     description: "Kicks a user",
-    usage: `${config.pref}kick user-mention${config.suff}`,
+    usage: `${config.pref}kick [user-mention]${config.suff}`,
     aliases: ['']
 }

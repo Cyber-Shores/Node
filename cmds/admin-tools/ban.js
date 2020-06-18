@@ -32,6 +32,6 @@ module.exports.help = {
     name: "ban",
     reqPerms: ["BAN_MEMBERS"],
     description: "Bans a user",
-    usage: `${config.pref}ban user-mention${config.suff}`,
+    usage: `${config.pref}ban [user-mention]${config.suff}`,
     aliases: ['']
 }

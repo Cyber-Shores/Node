@@ -27,6 +27,6 @@ module.exports.help = {
     name: "clear",
     reqPerms: ['MANAGE_MESSAGES'],
     description: "Bulk deletes a number of messages from a channels history, from a specified user or from everyone.",
-    usage: `${config.pref}clear [number]${config.suff} || ${config.pref}clear [number] [user]${config.suff}`,
+    usage: `${config.pref}clear [number]${config.suff} || ${config.pref}clear [number] [user-mention]${config.suff}`,
     aliases: ['purge']
 }

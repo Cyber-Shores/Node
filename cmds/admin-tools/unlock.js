@@ -38,6 +38,6 @@ module.exports.help = {
     name: "unlock",
     reqPerms: [],
     description: "Unlock a channel",
-    usage: `${config.pref}unlock channel-mention${config.suff}`,
+    usage: `${config.pref}unlock [channel-mention]${config.suff}`,
     aliases: ['']
 }
