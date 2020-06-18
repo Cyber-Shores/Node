@@ -13,10 +13,13 @@ module.exports.run = async (bot, msg, args) => {
         });
         bot.commands.forEach(element => {
             let hasPerms = true;
-            element.help.reqPerms.forEach(perm => {
-                if(!msg.member.permissions.has(perm)) hasPerms = false;
-            });
-
+            try {
+                element.help.reqPerms.forEach(perm => {
+                    if(!msg.member.permissions.has(perm)) hasPerms = false;
+                });
+            } catch(e) {
+                console.log(e.stack);
+            }
             if(hasPerms){
                 embed.addField(element.help.name, element.help.usage);
             }
