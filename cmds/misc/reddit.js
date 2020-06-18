@@ -33,6 +33,6 @@ module.exports.help = {
     name: "reddit",
     reqPerms: [],
     description: "Gets a post from a subreddit",
-    usage: `${config.pref}reddit${config.suff} <subreddit name without r/>`,
+    usage: `${config.pref}reddit <subreddit excluding r/>${config.suff}`,
     aliases: ['r/']
 }

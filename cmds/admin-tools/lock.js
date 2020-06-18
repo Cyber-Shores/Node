@@ -39,6 +39,6 @@ module.exports.help = {
     name: "lock",
     reqPerms: [],
     description: "Locks a channel",
-    usage: `${config.pref}lock${config.suff} <channel mention> <reason>`,
+    usage: `${config.pref}lock channel-mention reason${config.suff}`,
     aliases: ['']
 }

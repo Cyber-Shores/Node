@@ -17,6 +17,7 @@
     "discord.js-menu": "^1.0.3",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.4",
+    "random-puppy": "^1.1.0",
     "snekfetch": "^4.0.4",
     "urban": "^0.3.2"
   }
