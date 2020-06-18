@@ -5,7 +5,6 @@ module.exports.run = async (bot, msg, args) => {
     let m =  await msg.channel.send("```Generating menu...```");
     let randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
     if (!args[0]) {
-        msg.delete();
         let embed = new MessageEmbed({
             title: "Help",
             description: "Commands:",
