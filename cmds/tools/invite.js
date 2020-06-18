@@ -5,7 +5,7 @@ module.exports.run = async (bot, msg, args) => {
         let link = await bot.generateInvite(["ADMINISTRATOR"]);
         const embed = new MessageEmbed({
             color: msg.member.displayHexColor,
-            thumbnail: {
+            image: {
                 url: bot.user.displayAvatarURL()
             },
             title: 'Add the bot!',
