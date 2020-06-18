@@ -78,7 +78,6 @@ module.exports.run = async (bot, msg, args) => {
         
         }));
         m.delete()
-        msg.delete()
     }
     
 }
