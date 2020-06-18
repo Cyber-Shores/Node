@@ -17,16 +17,18 @@ module.exports.run = async (client, msg, args) => {
         }
     ]);
     //the rest of the command output if the overwrite gets run
-    let strings = args.join(" ").split(channelmention);
-    let randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
     
-    let embed = new Discord.MessageEmbed()
-    .setTitle(`#${channelmention.name}`)
-    .setDescription(`Has been unlocked`)
-    .setTimestamp()
-    .setFooter(`msg id:${msg.id}`)
-    .setColor(randomColor)
-    msg.channel.send(embed)
+    let embed = new Discord.MessageEmbed({
+        title: `#${channelmention.name}`,
+        description: `Has been unlocked.`,
+        timestamp: new Date(),
+        footer: {
+            text: `${msg.author.username}`,
+            icon_url: `${msg.author.displayAvatarURL()}`
+        },
+        color: (msg.member.displayHexColor)
+    })
+    channelmention.send(embed)
 
     console.log(`${channelmention.name} Was unlocked by ${msg.author.tag}`)
 
@@ -39,5 +41,5 @@ module.exports.help = {
     reqPerms: [],
     description: "Unlock a channel",
     usage: `${config.pref}unlock [channel-mention]${config.suff}`,
-    aliases: ['']
+    aliases: []
 }

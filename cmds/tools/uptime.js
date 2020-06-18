@@ -35,5 +35,5 @@ module.exports.help = {
     reqPerms: [''],
     description: "Shows the uptime of the bot",
     usage: `${config.pref}uptime${config.suff}`,
-    aliases: ['']
+    aliases: []
 }

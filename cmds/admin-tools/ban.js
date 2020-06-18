@@ -22,6 +22,7 @@ module.exports.run = async (client, msg, args, bot) => {
             .setTitle('**Ban Hammer**')
             .setDescription(`The Ban Hammer Has Struck Down ${user.username}`)
             .attachFiles('https://i.imgur.com/r42VJvZ.gif')
+            .setColor(msg.member.displayHexColor)
             msg.channel.send(banembed)
           })
 
@@ -33,5 +34,5 @@ module.exports.help = {
     reqPerms: ["BAN_MEMBERS"],
     description: "Bans a user",
     usage: `${config.pref}ban [user-mention]${config.suff}`,
-    aliases: ['']
+    aliases: []
 }

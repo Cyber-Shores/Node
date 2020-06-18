@@ -20,6 +20,7 @@ module.exports.run = async (client, msg, args) => {
             .setTitle('**The Boot**')
             .setDescription(`**${user.username}** Has Recieved The Boot`)
             .attachFiles('https://i.imgur.com/r42VJvZ.gif')
+            .setColor(msg.member.displayHexColor)
             msg.channel.send(kickembed)
           })
 
@@ -31,5 +32,5 @@ module.exports.help = {
     reqPerms: [],
     description: "Kicks a user",
     usage: `${config.pref}kick [user-mention]${config.suff}`,
-    aliases: ['']
+    aliases: []
 }

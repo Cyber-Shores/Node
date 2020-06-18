@@ -31,5 +31,5 @@ module.exports.help = {
     reqPerms: [],
     description: "Gets Bot Ping",
     usage: `${config.pref}ping${config.suff}`,
-    aliases: ['']
+    aliases: []
 }
