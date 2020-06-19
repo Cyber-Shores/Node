@@ -37,7 +37,7 @@ module.exports.run = async (bot, msg, args) => {
                 content: new MessageEmbed({
                     title: "About",
                     description: "About The Bot",
-                    color: randomColor,
+                    color: msg.member.displayHexColor,
                     fields: [
                         {
                             name: "Creators",
