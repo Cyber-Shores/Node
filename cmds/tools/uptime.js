@@ -30,7 +30,7 @@ h < 10 ? h = `0${h}`: h = `${h}`
 
 module.exports.help = {
     name: "uptime",
-    reqPerms: [''],
+    reqPerms: [],
     description: "Shows the uptime of the bot",
     usage: `${config.pref}uptime${config.suff}`,
     aliases: []
