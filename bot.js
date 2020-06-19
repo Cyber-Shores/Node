@@ -14,15 +14,15 @@ fs.readdir("./cmds/", (err, folders) => {
 
             let jsfiles = files.filter(f => f.split(".").pop() === "js");
             if(jsfiles.length <= 0) {
-                console.log(`\nNo commands to load in \u001b[31;1m${item}\u001b[0m!`);
+                console.log(`No commands to load in ${item}!`);
                 return;
             }
             
-            console.log(`\nLoading \u001b[32;1m${jsfiles.length}\u001b[0m commands from \u001b[32m${item}\u001b[0m!`);
+            console.log(`Loading ${jsfiles.length} commands from ${item}!`);
         
             jsfiles.forEach((f, i) => {
                 let props = require(`./cmds/${item}/${f}`);
-                console.log(`\u001b[32;1m${i + 1}\u001b[0m: \u001b[32m${f}\u001b[0m loaded!`);
+                console.log(`${i + 1} ${f}!`);
                 bot.commands.set(props.help.name, props);
                 props.help.aliases.forEach(alias => {
                     bot.aliases.set(alias, props.help.name);
@@ -34,7 +34,7 @@ fs.readdir("./cmds/", (err, folders) => {
 });
 
 bot.on('ready', async () => {
-  console.log(`\u001b[42m${bot.user.username}\u001b[0m is online!`);
+  console.log(`${bot.user.username} is online!`);
 let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
 bot.user.setActivity(`For ${config.pref}tags${config.suff} in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
  // bot.user.setActivity(`For ${config.pref}tags${config.suff}`, { type: 'WATCHING' });
