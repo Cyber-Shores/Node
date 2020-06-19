@@ -1,7 +1,43 @@
 const {Client, MessageEmbed} = module.require("discord.js");
 const config = module.require("../../config.json");
 const { Menu } = module.require('discord.js-menu');
+const git = require('async-git');
+ 
 module.exports.run = async (bot, msg, args) => {
+    function calcDate(date1,date2) {
+        var diff = Math.floor(date1.getTime() - date2.getTime());
+        var day = 1000 * 60 * 60 * 24;
+        var message = "";
+        var days = Math.floor(diff/day);
+        if(days<31){
+            return days + " days ";
+        }
+        var months = Math.floor(days/31);
+        if(months<12){
+            var daysLeft = days-months*31;
+            message+= months + " months and ";
+            message+= daysLeft + " days ";
+            return message;
+        }
+        var years = Math.floor(months/12);
+        var monthsLeft = months - years*12;
+        var daysLeft = days-months*31;
+        message+=years+" years, ";
+        message+=monthsLeft+" months and ";
+        message+=daysLeft+" days ";
+        return message;
+    }
+
+    let CALCDATEGIT = calcDate(new Date(), await git.date)
+    console.log(CALCDATEGIT)
+    if(CALCDATEGIT == '0 days ') {
+        GITDATE = 'Today!'
+    }else{
+        GITDATE = `${calcDate(new Date(), await git.date)} ago`
+    }
+
+    let tagsarray = await git.tags
+
     let m =  await msg.channel.send("```Generating menu...```");
     let randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
     if (!args[0]) {
@@ -36,18 +72,41 @@ module.exports.run = async (bot, msg, args) => {
                 name: "About",
                 content: new MessageEmbed({
                     title: "About",
-                    description: "About The Bot",
-                    color: randomColor,
+                    description: `About The Bot`,
+                    footer: {
+                        text: `${bot.user.username}`,
+                        icon_url: `${bot.user.displayAvatarURL()}`
+                    },
+                    timestamp: new Date(),
+                    color: `#07592b`,
+                    url: `https://github.com/Cyber-Shores/Node`,
                     fields: [
                         {
-                            name: "Creators",
-                            value: `\`\`\`${bot.users.cache.get('265499320894095371').tag}\n${bot.users.cache.get('568087768530419732').tag}\`\`\``
+                            name: "Developers:",
+                            value: `\`\`\`${bot.users.cache.get('265499320894095371').tag}\n${bot.users.cache.get('568087768530419732').tag}\`\`\``,
+                            inline: true
                             // (Each page can only have 20 reactions, though. Discord's fault.)
                         },
                         {
-                            name: "Lead Artist",
-                            value: `\`\`\`dom#9445\`\`\``
-                        }
+                            name: "Lead Artist:",
+                            value: `\`\`\`dom#9445\`\`\``,
+                            inline: true
+                        },
+                        {
+                            name: `Orginization:`,
+                            value: await git.owner,
+                            inline: true
+                        },
+                        {
+                            name: `Version:`,
+                            value: await tagsarray.slice(-1)[0],
+                            inline: true
+                        },
+                        {
+                            name: `Last Updated:`,
+                            value: `${GITDATE}`,
+                            inline: true
+                        },
                     ]
                 }),
                 reactions: {
