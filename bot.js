@@ -35,7 +35,9 @@ fs.readdir("./cmds/", (err, folders) => {
 
 bot.on('ready', async () => {
   console.log(`\u001b[42m${bot.user.username}\u001b[0m is online!`);
-  bot.user.setActivity(`For ${config.pref}tags${config.suff}`, { type: 'WATCHING' });
+let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
+bot.user.setActivity(`For ${config.pref}tags${config.suff} in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
+ // bot.user.setActivity(`For ${config.pref}tags${config.suff}`, { type: 'WATCHING' });
 });
 
 bot.on("message", async msg => {
