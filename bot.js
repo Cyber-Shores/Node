@@ -34,12 +34,12 @@ fs.readdir("./cmds/", (err, folders) => {
 });
 
 bot.on('ready', async () => {
-  console.log(`${bot.user.username} is online!`);
-let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
-bot.user.setActivity(`For ${config.pref}tags${config.suff} in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
- // bot.user.setActivity(`For ${config.pref}tags${config.suff}`, { type: 'WATCHING' });
+    console.log(`${bot.user.username} is online!`);
+    const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
+    bot.user.setActivity(`For ${config.pref}tags${config.suff} in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
 });
 
+// Primary command identifier
 bot.on("message", async msg => {
     if(msg.author.bot) return;
     if(msg.channel.type === "dm") return;
@@ -60,5 +60,31 @@ bot.on("message", async msg => {
     if(command) command.run(bot, msg, args, config);
 
 });
+
+
+bot.on("message", async msg => {
+    if(msg.author.bot) return;
+    if(msg.channel.type === "dm") return;
+    if(msg.channel.name != 'node-network') return;
+
+
+    let embed = new MessageEmbed({
+        author: {
+            name: msg.author.username,
+            icon_url: msg.author.displayAvatarURL(),
+        },
+        description: msg.content,
+        color: msg.member.displayHexColor,
+        footer: {
+            text: msg.guild.name,
+            icon_url: msg.guild.iconURL()
+        }
+    });
+    let attachment = msg.attachments.first();
+    if(attachment) embed.setImage(attachment.url);
+    bot.guilds.cache.filter(g => g != msg.guild && g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.find(c => c.name == 'node-network').send(embed));
+
+})
+
 
 bot.login(process.env.TOKEN);
