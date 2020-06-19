@@ -69,6 +69,6 @@ module.exports.help = {
     name: "slots",
     reqPerms: [''],
     description: "Pull the lever and spin the slots. Are you feeling lucky?",
-    usage: `${config.pref}}slots [3 - 25]${config.suff}`,
+    usage: `${config.pref}slots [3 - 25]${config.suff}`,
     aliases: ['']
 }
