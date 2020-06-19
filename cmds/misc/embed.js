@@ -4,9 +4,9 @@ module.exports.run = async (bot, msg, args) => {
 
     let STRINGS = args.join(' ').split('|')
     if(!msg.member.hasPermission('MANAGE_MESSAGES')) return require('../../util/errMsg.js').run(bot, msg, false, "You do not have proper perms");
-    if(!STRINGS[0] || !STRINGS[1] || !STRINGS[2]) return require('../../util/errMsg.js').run(bot, msg, true, "Please fill out all perameters!");
+    if(!STRINGS[0] || !STRINGS[1] || !STRINGS[2]) return require('../../util/errMsg.js').run(bot, msg, true, "Please fill out all parameters!");
 
-    let rulesembed = new Discord.MessageEmbed({
+    const rulesembed = new Discord.MessageEmbed({
         title: `${STRINGS[0]}`,
         description: `${STRINGS[1]}`,
         color: `${STRINGS[2]}`,

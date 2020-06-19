@@ -29,7 +29,7 @@ module.exports.run = async (bot, msg, args) => {
     });
     let total = new Array();
     reactions.forEach(reaction => {
-        let people = reaction.users.cache.filter(u => u.id != "708803999838633985");
+        let people = reaction.users.cache.filter(u => u.id != "722615667064569867");
         people.forEach(p => {
             if(!total.includes(p.username)) total.push(p.username);
         })
@@ -43,7 +43,7 @@ module.exports.run = async (bot, msg, args) => {
     let yesVoters = new Array();
     let noVoters = new Array();
     await reactions.get(agree).users.cache.forEach(u => {
-        if(u.id != "708803999838633985"){
+        if(u.id != "722615667064569867"){
             yesVoters.push(u.username);
         }
     });
@@ -53,7 +53,7 @@ module.exports.run = async (bot, msg, args) => {
         embedYes.setDescription(yesVoters);
     }
     await reactions.get(disagree).users.cache.forEach(u => {
-        if(u.id != "708803999838633985"){
+        if(u.id != "722615667064569867"){
             noVoters.push(u.username);
         }
    });
@@ -92,6 +92,7 @@ module.exports.run = async (bot, msg, args) => {
         }
     ]);
     wait.delete();
+    m.delete();
     //msg.channel.send(`\`\`\`Voting complete! \n${agree}: ${reactions.get(agree).count-1}\n${disagree}: ${reactions.get(disagree).count-1}\`\`\``);
 }
 

@@ -149,7 +149,7 @@ module.exports.run = async (bot, msg, args) => {
             fields: [
                 {
                     name: "📑 General:",
-                    value: `\`\`\`javascript\nID: ${user.user.id}\nTag: ${user.user.tag}\n\`\`\``,
+                    value: `\`\`\`MIPS\nID: ${user.user.id}\nTag: ${user.user.tag}\n\`\`\``,
                     inline: true
                 },
                 {
@@ -174,14 +174,6 @@ module.exports.run = async (bot, msg, args) => {
                 icon_url: `${msg.author.displayAvatarURL()}`
             }
         });
-        // let embed = new MessageEmbed()
-        //     .setAuthor(user.user.username)
-        //     .setDescription(`Info about ${user.user.username}`)
-        //     .setColor(user.displayHexColor)
-        //     .setThumbnail(user.user.displayAvatarURL())
-        //     .addField("Full Username", user.user.tag)
-        //     .addField("ID", user.id)
-        //     .addField("Created On", user.user.createdAt);
         msg.channel.send(embed);
     }
 }
