@@ -67,8 +67,8 @@ module.exports.run = async (client, msg, args) => {
 
 module.exports.help = {
     name: "slots",
-    reqPerms: [''],
+    reqPerms: [],
     description: "Pull the lever and spin the slots. Are you feeling lucky?",
     usage: `${config.pref}slots [3 - 25]${config.suff}`,
-    aliases: ['']
+    aliases: []
 }
