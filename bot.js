@@ -4,6 +4,8 @@ const Discord = require("discord.js");
 const { Client, MessageEmbed } = require('discord.js');
 const bot = new Client();
 const fs = require("fs");
+// const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
+// const dbl = new DBL('', bot);
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
