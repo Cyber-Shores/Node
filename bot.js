@@ -4,11 +4,22 @@ const Discord = require("discord.js");
 const { Client, MessageEmbed } = require('discord.js');
 const bot = new Client();
 const fs = require("fs");
+const mongoose = require('mongoose');
+const GuildModel = require('./models/GuildData');
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
 // const dbl = new DBL('', bot);
+
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
+//start of connecting to database
+mongoose.connect("mongodb+srv://Node:rC851amHaHKVdB4V@node-dlsj9.mongodb.net/Node?retryWrites=true&w=majority", {
+    useNewUrlParser: true,
+    useFindAndModify: false
+});
+//end
+
+//start of command reading
 fs.readdir("./cmds/", (err, folders) => {
     folders.forEach(item => {
         fs.readdir(`./cmds/${item}`, (err, files) => {
@@ -34,21 +45,71 @@ fs.readdir("./cmds/", (err, folders) => {
 
     });
 });
+//end
+bot.once('ready', async => {
+    let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
+    bot.user.setActivity(`For <prefix> in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
+})
 
+//Creating model in mongo for each guild joined
+bot.on('guildCreate', async joinedGuild => {
+    //activity set
+    let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
+    bot.user.setActivity(`For prefix in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
+    //end
+    const req = await GuildModel.findOne({ id: joinedGuild.id });
+        if (req) return;
+    const doc = new GuildModel({ id: joinedGuild.id, name: joinedGuild.name });
+        await doc.save();
+        console.log('Doc Created');
+});
+//end
+
+//start of custom prefixes
+bot.on('message', async msg => {
+    
+        let args = msg.content.split(" ");
+    if(!msg.guild) return;
+    if(msg.author.bot) return;
+    
+    if (msg.content === '<prefix>') {
+
+        const req = await GuildModel.findOne({ id: msg.guild.id });
+        if (!req) return msg.reply('Sorry! doc doesnt exist.');
+        return msg.reply(`I found your prefix: ${req.prefix} Suffix: ${req.suffix}`);
+
+    } 
+
+    if(msg.content.includes(`<setprefix>`)) {
+        if(!msg.member.hasPermission("ADMINISTRATOR")) return require('./util/errMsg').run(bot, msg, false, "You do not have proper premissions.");
+        const req = await GuildModel.findOne({ id: msg.guild.id });
+        if(!req) return msg.reply('Sorry there was an error!');
+        await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: `${args[2]}`}}, { new: true});
+        await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: `${args[1]}`}}, { new: true});
+        console.log(msg.content)
+        return msg.channel.send(`New Prefix: ${args[1]} Suffix: ${args[2]}`)
+
+    }
+});
+    
+//end
+
+//console logging of "ready bot"
 bot.on('ready', async () => {
     console.log(`${bot.user.username} is online!`);
-    const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
-    bot.user.setActivity(`For ${config.pref}tags${config.suff} in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
 });
+//end
 
 // Primary command identifier
 bot.on("message", async msg => {
+    const req = await GuildModel.findOne({ id: msg.guild.id });
+
     if(msg.author.bot) return;
     if(msg.channel.type === "dm") return;
 
     let args = '';
-    if(msg.content.includes(config.pref)&&msg.content.includes(config.suff)){
-        args = msg.content.slice(msg.content.indexOf(config.pref)+config.pref.length, msg.content.indexOf(config.suff)).trim().split(/ +/g);
+    if(msg.content.includes(req.prefix)&&msg.content.includes(req.suffix)){
+        args = msg.content.slice(msg.content.indexOf(req.prefix)+req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);
     }else{
         return;
     }
@@ -62,9 +123,11 @@ bot.on("message", async msg => {
     if(command) command.run(bot, msg, args, config);
 
 });
+//end
 
 
 bot.on("message", async msg => {
+
     if(msg.author.bot) return;
     if(msg.channel.type === "dm") return;
     if(msg.channel.name != 'node-network') return;
