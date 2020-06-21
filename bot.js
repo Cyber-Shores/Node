@@ -15,8 +15,10 @@ bot.aliases = new Discord.Collection();
 //start of connecting to database
 mongoose.connect(process.env.MONGOLINK, {
     useNewUrlParser: true,
-    useFindAndModify: false
-});
+    useFindAndModify: false,
+    useUnifiedTopology: true
+}).then(console.log('MongoDB connected Connected!'));
+
 //end
 
 //start of command reading
@@ -49,6 +51,14 @@ fs.readdir("./cmds/", (err, folders) => {
 bot.once('ready', async => {
     let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
     bot.user.setActivity(`For <prefix> in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
+    
+    CLIENTGUILDS.forEach(async guild => {
+        const req = await GuildModel.findOne({ id: guild.id });
+        if (req) return;
+    const doc = new GuildModel({ id: guild.id });
+        await doc.save();
+        console.log(`Guild Doc Created!`)
+    })
 })
 
 //Creating model in mongo for each guild joined
@@ -59,7 +69,7 @@ bot.on('guildCreate', async joinedGuild => {
     //end
     const req = await GuildModel.findOne({ id: joinedGuild.id });
         if (req) return;
-    const doc = new GuildModel({ id: joinedGuild.id, name: joinedGuild.name });
+    const doc = new GuildModel({ id: joinedGuild.id });
         await doc.save();
         console.log('Doc Created');
 });
