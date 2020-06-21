@@ -13,12 +13,14 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
 //start of connecting to database
+//process.env.MONGOLINK used to hide password
 mongoose.connect(process.env.MONGOLINK, {
+    //mongo connect settings
     useNewUrlParser: true,
     useFindAndModify: false,
     useUnifiedTopology: true
+    //end
 }).then(console.log('MongoDB connected Connected!'));
-
 //end
 
 //start of command reading
@@ -48,36 +50,56 @@ fs.readdir("./cmds/", (err, folders) => {
     });
 });
 //end
+
+//Getting stuff prepared for ready
 bot.once('ready', async => {
+    //first status set for `ready`
     let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
     bot.user.setActivity(`For <prefix> in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
-    
+    //end
+    //Creating a doc for each guild if one is not already made
     CLIENTGUILDS.forEach(async guild => {
         const req = await GuildModel.findOne({ id: guild.id });
         if (req) return;
     const doc = new GuildModel({ id: guild.id });
         await doc.save();
+        NEWGUILDDOCS.push('1')
         console.log(`Guild Doc Created!`)
-    })
-})
+        //end
+    });
+});
 
-//Creating model in mongo for each guild joined
+//Things to do on guild join
 bot.on('guildCreate', async joinedGuild => {
     //activity set
     let CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
     bot.user.setActivity(`For prefix in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
     //end
+    //creating a doc for each guild joined while on.
     const req = await GuildModel.findOne({ id: joinedGuild.id });
         if (req) return;
     const doc = new GuildModel({ id: joinedGuild.id });
         await doc.save();
         console.log('Doc Created');
+    //end
 });
 //end
 
-//start of custom prefixes
+//Stuff to do on guild leave
+bot.on('guildDelete', async joinedGuild => {
+    //deletes server from db
+    const req = await GuildModel.findOne({ id: joinedGuild.id });
+        if (!req) return;
+        await req.deleteOne({ id: joinedGuild.id, fuction(err) {
+            if(err) throw err;
+        }});
+        console.log('Doc Removed');
+        //end
+});
+//end
+
+//Custom prefixes
 bot.on('message', async msg => {
-    
         let args = msg.content.split(" ");
     if(!msg.guild) return;
     if(msg.author.bot) return;
@@ -86,11 +108,12 @@ bot.on('message', async msg => {
 
         const req = await GuildModel.findOne({ id: msg.guild.id });
         if (!req) return msg.reply('Sorry! doc doesnt exist.');
-        return msg.reply(`I found your prefix: ${req.prefix} Suffix: ${req.suffix}`);
+        return msg.reply(`I found your - Prefix: ${req.prefix} Suffix: ${req.suffix}`);
 
-    } 
+    }
 
     if(msg.content.includes(`<setprefix>`)) {
+        //setting a new prefix using the default one
         if(!msg.member.hasPermission("ADMINISTRATOR")) return require('./util/errMsg').run(bot, msg, false, "You do not have proper premissions.");
         const req = await GuildModel.findOne({ id: msg.guild.id });
         if(!req) return msg.reply('Sorry there was an error!');
@@ -98,13 +121,12 @@ bot.on('message', async msg => {
         await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: `${args[1]}`}}, { new: true});
         console.log(msg.content)
         return msg.channel.send(`New Prefix: ${args[1]} Suffix: ${args[2]}`)
-
+        //end
     }
 });
-    
 //end
 
-//console logging of "ready bot"
+//Final ready
 bot.on('ready', async () => {
     console.log(`${bot.user.username} is online!`);
 });
@@ -135,14 +157,14 @@ bot.on("message", async msg => {
 });
 //end
 
-
+//Node Network
 bot.on("message", async msg => {
 
     if(msg.author.bot) return;
     if(msg.channel.type === "dm") return;
     if(msg.channel.name != 'node-network') return;
 
-
+    //creates new node network message
     let embed = new MessageEmbed({
         author: {
             name: msg.author.username,
@@ -157,9 +179,12 @@ bot.on("message", async msg => {
     });
     let attachment = msg.attachments.first();
     if(attachment) embed.setImage(attachment.url);
+    //end
+
+    //sending
     bot.guilds.cache.filter(g => g != msg.guild && g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.find(c => c.name == 'node-network').send(embed));
-
+    //end
 })
-
+//end
 
 bot.login(process.env.TOKEN);
