@@ -13,7 +13,7 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
 //start of connecting to database
-mongoose.connect("mongodb+srv://Node:rC851amHaHKVdB4V@node-dlsj9.mongodb.net/Node?retryWrites=true&w=majority", {
+mongoose.connect(process.env.MONGOLINK, {
     useNewUrlParser: true,
     useFindAndModify: false
 });
