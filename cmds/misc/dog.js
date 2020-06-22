@@ -37,6 +37,6 @@ module.exports.help = {
     name: "dog",
     reqPerms: [],
     description: "Posts a random image of a provided breed of dog.",
-    usage: `${config.pref}dog${config.suff} || ${config.pref}dog [breed]${config.suff}`,
+    usage: `${config.pref}dog${config.suff} || ${config.pref}dog [sub-breed] | [breed]${config.suff}`,
     aliases: ['puppy', 'doggo']
 }
