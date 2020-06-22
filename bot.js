@@ -6,6 +6,7 @@ const bot = new Client();
 const fs = require("fs");
 const mongoose = require('mongoose');
 const GuildModel = require('./models/GuildData');
+
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
 // const dbl = new DBL('', bot);
 
@@ -20,7 +21,7 @@ mongoose.connect(process.env.MONGOLINK, {
     useFindAndModify: false,
     useUnifiedTopology: true
     //end
-}).then(console.log('MongoDB connected Connected!'));
+}).then(console.log('\nMongoDB connected!\n'));
 //end
 
 //start of command reading
@@ -103,26 +104,49 @@ bot.on('message', async msg => {
         let args = msg.content.split(" ");
     if(!msg.guild) return;
     if(msg.author.bot) return;
-    
+    //rudementary command handler
     if (msg.content === '<prefix>') {
 
         const req = await GuildModel.findOne({ id: msg.guild.id });
         if (!req) return msg.reply('Sorry! doc doesnt exist.');
-        return msg.reply(`I found your - Prefix: ${req.prefix} Suffix: ${req.suffix}`);
+        let prefixembed = new Discord.MessageEmbed({
+            title: `Server Prefix & Suffiix:`,
+            description: `Prefix:  ${req.prefix}\nSuffix:  ${req.suffix}\n`,
+            color: msg.member.displayHexColor,
+        footer: {
+            "text": msg.author.username,
+            "icon_url": msg.author.displayAvatarURL()
+        },
+        timestamp: Date.now()
+        });
+
+        return msg.reply(prefixembed);
 
     }
 
-    if(msg.content.includes(`<setprefix>`)) {
+    if(msg.content.includes(`setprefix`)) {
+        if(!args[1] || !args[2]) return require('./util/errMsg').run(bot, msg, true, "Please provide both a prefix and a suffix!");
+        if(args[1].length > 2 || args[2].length > 2) return require('./util/errMsg').run(bot, msg, true, "Neither the prefix nor the suffix can be over 2 charachters long!");
         //setting a new prefix using the default one
         if(!msg.member.hasPermission("ADMINISTRATOR")) return require('./util/errMsg').run(bot, msg, false, "You do not have proper premissions.");
         const req = await GuildModel.findOne({ id: msg.guild.id });
         if(!req) return msg.reply('Sorry there was an error!');
         await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: `${args[2]}`}}, { new: true});
         await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: `${args[1]}`}}, { new: true});
-        console.log(msg.content)
-        return msg.channel.send(`New Prefix: ${args[1]} Suffix: ${args[2]}`)
+        let setprefixembed = await new Discord.MessageEmbed({
+            title: `New Prefix and Suffix`,
+            description: `Prefix: ${args[1]}\nSuffix: ${args[2]}\n`,
+            color: msg.member.displayHexColor,
+        footer: {
+            "text": msg.author.username,
+            "icon_url": msg.author.displayAvatarURL()
+        },
+        timestamp: Date.now()
+        });
+        return await msg.channel.send(setprefixembed)
         //end
     }
+    //end
 });
 //end
 

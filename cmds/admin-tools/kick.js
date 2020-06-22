@@ -22,9 +22,8 @@ module.exports.run = async (client, msg, args) => {
             .attachFiles('https://i.imgur.com/r42VJvZ.gif')
             .setColor(msg.member.displayHexColor)
             msg.channel.send(kickembed)
-          })
-
-}}
+          });
+}};
 
 module.exports.help = {
     name: "kick",
