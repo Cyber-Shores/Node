@@ -4,34 +4,32 @@ const config = module.require('../../config.json');
 module.exports.run = async (bot, msg, args) => {
 	if(!args[0]) return require('../../util/errMsg.js').run(bot, msg, true, 'Please provide a term to search');
 	// msg.channel.send("```⚠️ Please provide a term to search```");
+	if(args[0] == 'random') {
+		urban.random().first(json => {
+			const embed = new MessageEmbed()
+				.setTitle(json.word)
+				.setDescription(json.definition || '```⚠️ Definition Not Found```')
+				.addField('Upvotes', json.thumbs_up || 'NaN', true)
+				.addField('Downvotes', json.thumbs_down || 'NaN', true)
+				.setFooter(`Written by ${json.author}`);
+			msg.channel.send(embed);
+		});
+	}
+	else{
+		const str = args.join(' ');
 
-	const str = args.join(' ');
-
-	urban(str).first(json => {
-		if(!json) return require('../../util/errMsg.js').run(bot, msg, false, 'No results found');
-		const embed = new MessageEmbed()
-			.setTitle(json.word || str)
-			.setColor(msg.member.displayHexColor)
-			.setDescription(json.definition || '```⚠️ Definition Not Found```')
-			.addField('Upvotes', json.thumbs_up || 'NaN', true)
-			.addField('Downvotes', json.thumbs_down || 'NaN', true)
-			.setFooter(`Written by ${json.author}`);
-		msg.channel.send(embed);
-	});
-
-	// if(args[0] == 'random') {
-
-	// }else{
-	//     urban.random().first(json => {
-	//         let embed = new MessageEmbed()
-	//             .setTitle(json.word || str)
-	//             .setDescription(json.definition || "```⚠️ Definition Not Found```")
-	//             .addField("Upvotes", json.thumbs_up || "NaN", true )
-	//             .addField("Downvotes", json.thumbs_down || "NaN", true)
-	//             .setFooter(`Written by ${json.author}`);
-	//         msg.channel.send(embed);
-	//     });
-	// }
+		urban(str).first(json => {
+			if(!json) return require('../../util/errMsg.js').run(bot, msg, false, 'No results found');
+			const embed = new MessageEmbed()
+				.setTitle(json.word || str)
+				.setColor(msg.member.displayHexColor)
+				.setDescription(json.definition || '```⚠️ Definition Not Found```')
+				.addField('Upvotes', json.thumbs_up || 'NaN', true)
+				.addField('Downvotes', json.thumbs_down || 'NaN', true)
+				.setFooter(`Written by ${json.author}`);
+			msg.channel.send(embed);
+		});
+	}
 };
 
 module.exports.help = {
