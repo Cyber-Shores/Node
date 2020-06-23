@@ -1,5 +1,6 @@
 const config = module.require('../../config.json');
 const Discord = module.require('discord.js');
+const ms = module.require('ms');
 module.exports.run = async (bot, msg) => {
 
 	const UPTIME = bot.uptime;
@@ -15,7 +16,7 @@ module.exports.run = async (bot, msg) => {
 
 	const embed = new Discord.MessageEmbed({
 		title: '**Uptime**',
-		description: `I have been online for ${h}:${m}:${s}`,
+		description: `I have been online for roughly ${ms(bot.uptime, { long: true })}\`\`\`${h}:${m}:${s}\`\`\``,
 		color: msg.member.displayHexColor,
 		footer: {
 			'text': msg.author.username,
