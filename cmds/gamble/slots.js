@@ -11,7 +11,7 @@ module.exports.run = async (bot, msg, args) => {
 		.setTitle('Slots!')
 		.setDescription('--------------------------------');
 
-	const WINARRAY = [];
+	const winarray = [];
 	let winresult;
 	let color;
 
@@ -42,11 +42,11 @@ module.exports.run = async (bot, msg, args) => {
 		}
 		slotembed
 			.addField(`Slot ${i + 1}`, `${randomicon}`, true);
-		WINARRAY.push(resultvar);
+		winarray.push(resultvar);
 	}
 
-	const result = WINARRAY.every(function(e) {
-		return e == WINARRAY[2];
+	const result = winarray.every(function(e) {
+		return e == winarray[2];
 	});
 
 	if(result == true) {

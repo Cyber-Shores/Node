@@ -3,14 +3,14 @@ const config = module.require('../../config.json');
 module.exports.run = async (bot, msg) => {
 
 	if(!msg.member.hasPermission('MANAGE_MESSAGES')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper premissions.');
-	const USER = msg.mentions.members.first();
-	if(!USER) return require('../../util/errMsg.js').run(bot, msg, true, 'Please mention a user');
-	const ROLE = msg.guild.roles.cache.find(r => r.name === 'Node Muted');
+	const user = msg.mentions.members.first();
+	if(!user) return require('../../util/errMsg.js').run(bot, msg, true, 'Please mention a user');
+	const role = msg.guild.roles.cache.find(r => r.name === 'Node Muted');
 
-	USER.roles.remove(ROLE);
+	user.roles.remove(role);
 	const unmuteembed = new Discord.MessageEmbed({
 		title: 'Unmute',
-		description: `${USER} has been unmuted!`,
+		description: `${user} has been unmuted!`,
 		footer: {
 			text: `${msg.author.username}`,
 			icon_url: `${msg.author.displayAvatarURL()}`,
