@@ -26,7 +26,7 @@ module.exports.run = async (bot, msg, args) => {
 
 module.exports.help = {
 	name: 'embed',
-	category: 'Misc.',
+	category: 'Admin Tools',
 	reqPerms: ['MANAGE_MESSAGES'],
 	description: 'creates a custom embed',
 	usage: `${config.pref}embed Title|Text|Hexcode${config.suff}`,
