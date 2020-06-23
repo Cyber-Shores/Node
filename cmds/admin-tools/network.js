@@ -2,6 +2,14 @@ const { MessageEmbed } = require('discord.js');
 
 const config = module.require('../../config.json');
 module.exports.run = async (bot, msg) => {
+	function getDate() {
+		const today = new Date();
+		const dd = String(today.getDate()).padStart(2, '0');
+		const mm = String(today.getMonth() + 1).padStart(2, '0');
+		const yyyy = today.getFullYear();
+
+		return `${mm}/${dd}/${yyyy}`;
+	}
 	if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper perms');
 	let channel = msg.guild.channels.cache.find(c => c.name == 'node-network');
 	if(!channel) {
@@ -17,7 +25,13 @@ module.exports.run = async (bot, msg) => {
 				title: `Welcome to the Node Network, ${msg.guild.name}.`,
 				description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
 				color: 0x07592b,
-			}));
+				fields: [
+					{
+						name: `Number of servers in connected to the Node Network as of ${getDate()}:`,
+						value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+					},
+				],
+			})).then(m => m.pin());
 			msg.channel.send(new MessageEmbed({
 				title: `${msg.guild.name} successfully connected to the Node Network!`,
 				description: `<#${channel.id}>`,
@@ -31,7 +45,7 @@ module.exports.run = async (bot, msg) => {
 		}
 		catch(e) {
 			console.log(e.stack);
-			return require('../../util/errMsg.js').run(bot, msg, false, 'Uh Oh, failed to properly generate a Node Network channel!\nPlease report this in our support server: https://discord.gg/GUvk7Qu');
+			return require('../../util/errMsg.js').run(bot, msg, false, 'Uh Oh, failed to properly generate a Node Network channel!\nIf a channel was created, delete it then please report this in our support server: https://discord.gg/GUvk7Qu');
 		}
 	}
 	else{
