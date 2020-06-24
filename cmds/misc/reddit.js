@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 const config = module.require('../../config.json');
 const randomPuppy = require('random-puppy');
-module.exports.run = async (client, msg, args) => {
+module.exports.run = async (bot, msg, args) => {
 	if(!args[0]) return msg.channel.send('Please provide a subreddit name');
 	const m = await msg.channel.send('```Generating image...```');
 	const subreddits = [
