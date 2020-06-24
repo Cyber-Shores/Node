@@ -75,28 +75,28 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 	if(args[0] == 'server' && args[1] == 'bio') {
-		let strings = args.join(" ").split(`${args[1]} `);
-		if(!msg.member.hasPermission("ADMINISTRATOR")) return require('../../util/errMsg').run(bot, msg, false, "You do not have proper premissions.");
-		if(strings[1].length > 150) return require('../../util/errMsg').run(bot, msg, true, "Server bio can not be longer than 150 characters");
+		const strings = args.join(' ').split(`${args[1]} `);
+		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg').run(bot, msg, false, 'You do not have proper premissions.');
+		if(strings[1].length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
 		const req = await GuildModel.findOne({ id: msg.guild.id });
 
 		if(!req) {
 			const doc = new GuildModel({ id: joinedGuild.id });
         	await doc.save();
 			console.log('Doc Created');
-		};
-		let serverbioembed = new Discord.MessageEmbed({
-			title: `New server Bio!`,
-            description: `${strings[1]}`,
-            color: msg.member.displayHexColor,
-        footer: {
-            "text": msg.author.username,
-            "icon_url": msg.author.displayAvatarURL()
-        },
-        timestamp: Date.now()
-        });
-		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { serverbio: `${strings[1]}`}}, { new: true});
-		return msg.channel.send(serverbioembed)
+		}
+		const serverbioembed = new Discord.MessageEmbed({
+			title: 'New server Bio!',
+			description: `${strings[1]}`,
+			color: msg.member.displayHexColor,
+			footer: {
+				'text': msg.author.username,
+				'icon_url': msg.author.displayAvatarURL(),
+			},
+			timestamp: Date.now(),
+		});
+		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { serverbio: `${strings[1]}` } }, { new: true });
+		return msg.channel.send(serverbioembed);
 	}
 	if(args[0] == 'server') {
 		// function roleList() {
@@ -156,10 +156,10 @@ module.exports.run = async (bot, msg, args) => {
 					inline:true,
 				},
 				{
-					name: `Server Bio`,
+					name: 'Server Bio',
 					value: `\`\`\`${req.serverbio}\`\`\``,
 					inline: true,
-				}
+				},
 			],
 			timestamp: new Date(),
 			footer: {
@@ -206,7 +206,7 @@ module.exports.run = async (bot, msg, args) => {
 					name: 'Bio',
 					value: `\`\`\`${req.bio}\`\`\``,
 					inline: false,
-				}
+				},
 			],
 			timestamp: new Date(),
 			footer: {
