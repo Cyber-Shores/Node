@@ -81,7 +81,7 @@ module.exports.run = async (bot, msg, args) => {
 		const req = await GuildModel.findOne({ id: msg.guild.id });
 
 		if(!req) {
-			const doc = new GuildModel({ id: joinedGuild.id });
+			const doc = new GuildModel({ id: msg.guild.id });
         	await doc.save();
 			console.log('Doc Created');
 		}
