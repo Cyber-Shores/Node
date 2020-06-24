@@ -10,6 +10,10 @@ const Guild = Schema({
         default: '>',
         type: String
     },
+    serverbio: {
+        default: `None`,
+        type: String
+    }
 })
 
 module.exports = model('GuildData', Guild);
