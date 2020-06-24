@@ -107,7 +107,7 @@ bot.on('message', async msg => {
 	if (msg.content === '<prefix>') {
 
 		const req = await GuildModel.findOne({ id: msg.guild.id });
-		if (!req) return msg.reply('Sorry! doc doesnt exist.');
+		if (!req) return require('./util/errMsg').run(bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
 		const prefixembed = new Discord.MessageEmbed({
 			title: 'Server Prefix & Suffiix:',
 			description: `Prefix:  ${req.prefix}\nSuffix:  ${req.suffix}\n`,
@@ -119,7 +119,7 @@ bot.on('message', async msg => {
 			timestamp: Date.now(),
 		});
 
-		return msg.reply(prefixembed);
+		return msg.channel.send(prefixembed);
 
 	}
 	// end
