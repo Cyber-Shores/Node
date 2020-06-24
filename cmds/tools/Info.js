@@ -82,7 +82,7 @@ module.exports.run = async (bot, msg, args) => {
 
 		if(!req) {
 			const doc = new GuildModel({ id: msg.guild.id });
-        	await doc.save();
+			await doc.save();
 			console.log('Doc Created');
 		}
 		const serverbioembed = new Discord.MessageEmbed({
