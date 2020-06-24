@@ -1,6 +1,7 @@
 const urban = module.require('urban');
 const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
+// eslint-disable-next-line no-unused-vars
 const { Menu } = module.require('discord.js-menu');
 
 module.exports.run = async (bot, msg, args) => {
