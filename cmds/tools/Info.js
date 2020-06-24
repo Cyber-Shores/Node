@@ -1,5 +1,8 @@
+const Bio = require('../../models/UserBio');
+const Discord = module.require('discord.js');
 const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
+
 module.exports.run = async (bot, msg, args) => {
 	function calcActivity() {
 		const presenceArr = [];
@@ -138,6 +141,7 @@ module.exports.run = async (bot, msg, args) => {
 	else{
 		let user = msg.mentions.members.first();
 		if(!user) user = msg.member;
+		const req = await Bio.findOne({ id: user.id });
 
 		const embed = new MessageEmbed({
 			color: msg.member.displayHexColor,
@@ -167,6 +171,11 @@ module.exports.run = async (bot, msg, args) => {
 					value: `\`\`\`javascript\n${user.user.presence.status}\`\`\``,
 					inline: true,
 				},
+				{
+					name: 'Bio',
+					value: `\`\`\`${req.bio}\`\`\``,
+					inline: false,
+				}
 			],
 			timestamp: new Date(),
 			footer: {

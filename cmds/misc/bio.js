@@ -12,7 +12,6 @@ module.exports.run = async (bot, msg, args) => {
 
     if(args[0] == 'set') {
         const req = await Bio.findOne({ id: msg.author.id });
-        
         if(req) {
 
             await Bio.findOneAndUpdate({ id: msg.author.id }, { $set: { bio: `${strings[1]}`}}, { new: true});
