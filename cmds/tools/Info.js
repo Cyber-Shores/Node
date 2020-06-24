@@ -223,6 +223,6 @@ module.exports.help = {
 	category: 'Tools',
 	reqPerms: [],
 	description: 'Posts a list of information about either the message author, or a provided user.',
-	usage: `${config.pref}info${config.suff} \\|\\| ${config.pref}info [user-mention]${config.suff} \\|\\| ${config.pref}info server${config.suff}`,
+	usage: `${config.pref}info${config.suff} \\|\\| ${config.pref}info [user-mention]${config.suff} \\|\\| ${config.pref}info server${config.suff} \\|\\| ${config.pref}info server bio [Your server bio]${config.suff}`,
 	aliases: [],
 };
