@@ -100,10 +100,45 @@ bot.on('guildDelete', async joinedGuild => {
 // end
 
 // Custom prefixes
+// bot.on('message', async msg => {
+// 	if(!msg.guild) return;
+// 	if(msg.author.bot) return;
+// 	// rudementary command handler
+// 	if (msg.content === '<prefix>') {
+
+// 		const req = await GuildModel.findOne({ id: msg.guild.id });
+// 		if (!req) return require('./util/errMsg').run(bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
+// 		const prefixembed = new Discord.MessageEmbed({
+// 			title: 'Server Prefix & Suffiix:',
+// 			description: `Prefix:  ${req.prefix}\nSuffix:  ${req.suffix}\n`,
+// 			color: msg.member.displayHexColor,
+// 			footer: {
+// 				'text': msg.author.username,
+// 				'icon_url': msg.author.displayAvatarURL(),
+// 			},
+// 			timestamp: Date.now(),
+// 		});
+
+// 		return msg.channel.send(prefixembed);
+
+// 	}
+	// end
+// });
+// end
+
+// Final ready
+bot.on('ready', async () => {
+	console.log(`${bot.user.username} is online!`);
+});
+// end
+
+// Primary command identifier
 bot.on('message', async msg => {
-	if(!msg.guild) return;
+	const req = await GuildModel.findOne({ id: msg.guild.id });
+
 	if(msg.author.bot) return;
-	// rudementary command handler
+	if(msg.channel.type === 'dm') return;
+
 	if (msg.content === '<prefix>') {
 
 		const req = await GuildModel.findOne({ id: msg.guild.id });
@@ -122,22 +157,6 @@ bot.on('message', async msg => {
 		return msg.channel.send(prefixembed);
 
 	}
-	// end
-});
-// end
-
-// Final ready
-bot.on('ready', async () => {
-	console.log(`${bot.user.username} is online!`);
-});
-// end
-
-// Primary command identifier
-bot.on('message', async msg => {
-	const req = await GuildModel.findOne({ id: msg.guild.id });
-
-	if(msg.author.bot) return;
-	if(msg.channel.type === 'dm') return;
 
 	let args = '';
 	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {
