@@ -203,8 +203,13 @@ module.exports.run = async (bot, msg, args) => {
 		let user = msg.mentions.members.first();
 		if(!user) user = msg.member;
 		const req = await Bio.findOne({ id: user.id });
-
-		const embed = new MessageEmbed({
+		if(!req) {
+		const doc = new Bio({ id: msg.author.id });
+		doc.save();
+		console.log('Doc Created');
+		}
+	
+		const embed = await new MessageEmbed({
 			color: msg.member.displayHexColor,
 			author: { name: user.user.name },
 			thumbnail: {
@@ -232,11 +237,6 @@ module.exports.run = async (bot, msg, args) => {
 					value: `\`\`\`javascript\n${user.user.presence.status}\`\`\``,
 					inline: true,
 				},
-				{
-					name: 'Bio',
-					value: `\`\`\`${req.bio}\`\`\``,
-					inline: false,
-				},
 			],
 			timestamp: new Date(),
 			footer: {
@@ -244,6 +244,8 @@ module.exports.run = async (bot, msg, args) => {
 				icon_url: `${msg.author.displayAvatarURL()}`,
 			},
 		});
+		if(req) embed
+		.addField(`Bio`, `\`\`\`${req.bio}\`\`\``, false)
 		msg.channel.send(embed);
 	}
 };

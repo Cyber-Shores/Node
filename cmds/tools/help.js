@@ -110,21 +110,21 @@ module.exports.run = async (bot, msg, args) => {
 							value: '```dom#9445```',
 							inline: true,
 						},
-						{
-							name: 'Orginization:',
-							value: await git.owner,
-							inline: true,
-						},
-						{
-							name: 'Version:',
-							value: await tagsarray.slice(-1)[0],
-							inline: true,
-						},
-						{
-							name: 'Last Updated:',
-							value: `${gitdate}`,
-							inline: true,
-						},
+						// {
+						// 	name: 'Orginization:',
+						// 	value: await git.owner,
+						// 	inline: true,
+						// },
+						// {
+						// 	name: 'Version:',
+						// 	value: await tagsarray.slice(-1)[0],
+						// 	inline: true,
+						// },
+						// {
+						// 	name: 'Last Updated:',
+						// 	value: `${gitdate}`,
+						// 	inline: true,
+						// },
 					],
 				}),
 				reactions: {
@@ -159,7 +159,7 @@ module.exports.run = async (bot, msg, args) => {
 		}));
 		m.delete();
 	}
-
+	
 };
 
 module.exports.help = {
