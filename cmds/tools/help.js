@@ -28,17 +28,17 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 
-	const calcdategit = calcDate(new Date(), await git.date);
-	console.log(calcdategit);
-	let gitdate;
-	if(calcdategit == '0 days ') {
-		gitdate = 'Today!';
-	}
-	else{
-		gitdate = `${calcDate(new Date(), await git.date)} ago`;
-	}
+	// const calcdategit = calcDate(new Date(), await git.date);
+	// console.log(calcdategit);
+	// let gitdate;
+	// if(calcdategit == '0 days ') {
+	// 	gitdate = 'Today!';
+	// }
+	// else{
+	// 	gitdate = `${calcDate(new Date(), await git.date)} ago`;
+	// }
 
-	const tagsarray = await git.tags;
+	// const tagsarray = await git.tags;
 
 	const m = await msg.channel.send('```Generating menu...```');
 	if (!args[0]) {
