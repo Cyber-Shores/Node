@@ -74,6 +74,32 @@ module.exports.run = async (bot, msg, args) => {
 		message += daysLeft + ' days ';
 		return message;
 	}
+	if(args[0] == `bio`) {
+		const strings = args.join(" ").split('12312352534624551344534524');
+		let bioarray = (strings.map(function(f){ return f.substring(f.indexOf(' ') + 1);}).join(' '));
+
+		if(bioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
+		const req = await Bio.findOne({ id: msg.author.id });
+
+		if(!req) {
+			const doc = new Bio({ id: msg.author.id, bio: bioarray })
+			await doc.save();
+			console.log(`User Bio Created`)
+		}
+		let userbioembed = new Discord.MessageEmbed({
+			title: 'Bio Updated!',
+			description: `${bioarray}`,
+			color: msg.member.displayHexColor,
+			footer: {
+				'text': msg.author.username,
+				'icon_url': msg.author.displayAvatarURL(),
+			},
+			timestamp: Date.now(),
+		});
+		await Bio.findOneAndUpdate({ id: msg.author.id }, { $set: { bio: `${bioarray}`}})
+		return msg.channel.send(userbioembed)
+
+	}
 	if(args[0] == 'server') {
 		if(args[1] == 'bio') {
 			const strings = args.join(' ').split(`${args[1]} `);
@@ -86,6 +112,7 @@ module.exports.run = async (bot, msg, args) => {
 				await doc.save();
 				console.log('Doc Created');
 			}
+			
 			const serverbioembed = new Discord.MessageEmbed({
 				title: 'New server Bio!',
 				description: `${strings[1]}`,
