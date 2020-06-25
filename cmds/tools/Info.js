@@ -75,7 +75,7 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 	if(args[0] == `bio`) {
-		const strings = args.join(" ").split('12312352534624551344534524');
+		const strings = args.join(" ").split();
 		let bioarray = (strings.map(function(f){ return f.substring(f.indexOf(' ') + 1);}).join(' '));
 
 		if(bioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
@@ -102,9 +102,10 @@ module.exports.run = async (bot, msg, args) => {
 	}
 	if(args[0] == 'server') {
 		if(args[1] == 'bio') {
-			const strings = args.join(' ').split(`${args[1]} `);
+			const strings = args.join(" ").split();
+			let serverbioarray = (strings.map(function(f){ return f.substring(f.indexOf(' ') + 1);}).join(' '));
 			if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg').run(bot, msg, false, 'You do not have proper premissions.');
-			if(strings[1].length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
+			if(serverbioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
 			const req = await GuildModel.findOne({ id: msg.guild.id });
 
 			if(!req) {
@@ -115,7 +116,7 @@ module.exports.run = async (bot, msg, args) => {
 			
 			const serverbioembed = new Discord.MessageEmbed({
 				title: 'New server Bio!',
-				description: `${strings[1]}`,
+				description: `${serverbioarray}`,
 				color: msg.member.displayHexColor,
 				footer: {
 					'text': msg.author.username,
@@ -123,7 +124,7 @@ module.exports.run = async (bot, msg, args) => {
 				},
 				timestamp: Date.now(),
 			});
-			await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { serverbio: `${strings[1]}` } }, { new: true });
+			await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { serverbio: `${serverbioarray}` } }, { new: true });
 			return msg.channel.send(serverbioembed);
 		}
 		else {
