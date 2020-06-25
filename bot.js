@@ -153,9 +153,21 @@ bot.on('message', async msg => {
 			},
 			timestamp: Date.now(),
 		});
-
 		return msg.channel.send(prefixembed);
-
+	}else if(msg.content === '<prefix reset>') {
+		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: `>` } }, { new: true });
+		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: `<` } }, { new: true });
+		const setprefixembed = await new MessageEmbed({
+			title: 'Prefix Reset!',
+			description: `Prefix: <\nSuffix: >\n`,
+			color: msg.member.displayHexColor,
+			footer: {
+				'text': msg.author.username,
+				'icon_url': msg.author.displayAvatarURL(),
+			},
+			timestamp: Date.now(),
+		});
+		return await msg.channel.send(setprefixembed);
 	}
 
 	let args = '';
