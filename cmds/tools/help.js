@@ -1,9 +1,9 @@
 const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
 const { Menu } = module.require('discord.js-menu');
-const git = module.require('async-git');
 
 module.exports.run = async (bot, msg, args) => {
+	const git = module.require('async-git');
 	function calcDate(date1, date2) {
 		const diff = Math.floor(date1.getTime() - date2.getTime());
 		const day = 1000 * 60 * 60 * 24;
