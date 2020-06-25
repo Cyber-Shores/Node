@@ -5,7 +5,6 @@ module.exports.run = async (bot, msg) => {
 
 	const user = msg.mentions.users.first();
 	const member = msg.guild.member(user);
-	msg.delete();
 
 	// checking if command is valid to run by user
 	if(!user) return require('../../util/errMsg.js').run(bot, msg, true, 'Please mention a user');

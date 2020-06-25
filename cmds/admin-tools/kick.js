@@ -5,8 +5,6 @@ module.exports.run = async (bot, msg) => {
 	const user = msg.mentions.users.first();
 	const member = msg.guild.member(user);
 
-	msg.delete();
-
 	if(!user) return require('../../util/errMsg.js').run(bot, msg, true, 'Please mention a user.');
 	if(!msg.member.hasPermission('KICK_MEMBERS')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper premissions.');
 	if(user.id === msg.author.id) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper premissions.');
