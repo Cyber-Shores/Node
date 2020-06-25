@@ -4,7 +4,7 @@ const { default: Axios } = require('axios');
 const snek = module.require('snekfetch');
 const config = module.require('../../config.json');
 module.exports.run = async (bot, msg) => {
-	return require('../../util/errMsg.js').run(bot, msg, false, `Known Error! A patch will be release soon!`);
+	return require('../../util/errMsg.js').run(bot, msg, false, 'Known Error! A patch will be release soon!');
 	// const m = await msg.channel.send('```Generating image...```');
 	// const file = (await snek.get('http://aws.random.cat/meow')).body.file;
 	// if(!file) return require('../../util/errMsg.js').run(bot, msg, true, 'I broke! Please try again or contact the developer!');
