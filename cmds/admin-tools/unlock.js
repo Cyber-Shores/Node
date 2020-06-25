@@ -2,7 +2,6 @@ const config = module.require('../../config.json');
 const Discord = module.require('discord.js');
 module.exports.run = async (bot, msg) => {
 
-	msg.delete();
 
 	const channelmention = msg.mentions.channels.first();
 

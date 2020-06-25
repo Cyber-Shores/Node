@@ -1,5 +1,9 @@
+const Bio = require('../../models/UserBio');
+const GuildModel = require('../../models/GuildData');
+const Discord = module.require('discord.js');
 const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
+
 module.exports.run = async (bot, msg, args) => {
 	function calcActivity() {
 		const presenceArr = [];
@@ -70,76 +74,142 @@ module.exports.run = async (bot, msg, args) => {
 		message += daysLeft + ' days ';
 		return message;
 	}
-	if(args[0] && args[0] == 'server') {
-		// function roleList() {
-		// 	let roleMsg = msg.guild.roles.cache.array().length + ': ' + msg.guild.roles.cache.array().join(' ');
-		// 	if(roleMsg.length > 1024) {
-		// 		const roles = msg.guild.roles.cache.array();
-		// 		const count = 0;
-		// 		roleMsg = msg.guild.roles.cache.array().length + ': ';
-		// 		roles.forEach(r => {
-		// 			if(r.mentionable) {
-		// 				roleMsg += r + ' ';
-		// 			}
-		// 		});
-		// 	}
-		// 	return roleMsg;
-		// }
-		const past = msg.guild.createdAt;
-		const creation = calcDate(new Date(), past);
-		const server = msg.guild;
+	if(args[0] == 'bio') {
+		const strings = args.join(' ').split();
+		const bioarray = (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
 
-		const embed = new MessageEmbed({
+		if(bioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
+		const req = await Bio.findOne({ id: msg.author.id });
+
+		if(!req) {
+			const doc = new Bio({ id: msg.author.id, bio: bioarray });
+			await doc.save();
+			console.log('User Bio Created');
+		}
+		const userbioembed = new Discord.MessageEmbed({
+			title: 'Bio Updated!',
+			description: `${bioarray}`,
 			color: msg.member.displayHexColor,
-			author: { name: server.name },
-			thumbnail: {
-				url: server.iconURL(),
-			},
-			fields: [
-				{
-					name: '📑 General',
-					value: `\`\`\`MIPS\nID:\n${server.id}\nCreated:\n${creation} ago\nOwner:\n${msg.guild.owner.user.tag}\nRegion:\n${msg.guild.region}\`\`\``,
-					inline: true,
-				},
-				{
-					name: '<:clnklist1:720049449023307787> Channels',
-					value: `\`\`\`javascript\nText: ${server.channels.cache.filter(channel => channel.type == 'text').size}\nVoice: ${server.channels.cache.filter(channel => channel.type == 'voice').size}\nStore: ${server.channels.cache.filter(channel => channel.type == 'store').size}\nNews: ${server.channels.cache.filter(channel => channel.type == 'news').size}\n\nCategories: ${server.channels.cache.filter(channel => channel.type == 'category').size}\n\`\`\``,
-					inline: true,
-				},
-				{
-					name: '📊 Statistics',
-					value: `\`\`\`javascript\nMembers: ${server.members.cache.size}\nHumans: ${server.members.cache.filter(member => !member.user.bot).size}\nBots: ${server.members.cache.filter(member => member.user.bot).size}\nRoles: ${server.roles.cache.size}\n\`\`\``,
-					inline: true,
-				},
-				{
-					name: '😀 Emojis',
-					value: `\`\`\`javascript\nEmojis: ${server.emojis.cache.filter(emoji => !emoji.animated).size}\nAnimojis: ${server.emojis.cache.filter(emoji => emoji.animated).size}\n\`\`\``,
-					inline: true,
-				},
-				{
-					name: '<:clnkboost:720057574631669851> Server Boosting',
-					value: `\`\`\`javascript\nTotal Boosts: ${server.premiumSubscriptionCount}\nServer Level: ${server.premiumTier}\n\`\`\``,
-					inline: true,
-				},
-				{
-					name: '🕹️ Most Common Activity',
-					value: `\`\`\`${calcActivity()}\`\`\``,
-					inline:true,
-				},
-			],
-			timestamp: new Date(),
 			footer: {
-				text: `${msg.author.username}`,
-				icon_url: `${msg.author.displayAvatarURL()}`,
+				'text': msg.author.username,
+				'icon_url': msg.author.displayAvatarURL(),
 			},
+			timestamp: Date.now(),
 		});
-		msg.channel.send(embed);
+		await Bio.findOneAndUpdate({ id: msg.author.id }, { $set: { bio: `${bioarray}` } });
+		return msg.channel.send(userbioembed);
+
+	}
+	if(args[0] == 'server') {
+		if(args[1] == 'bio') {
+			const strings = args.join(' ').split();
+			const serverbioarray = (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
+			if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg').run(bot, msg, false, 'You do not have proper premissions.');
+			if(serverbioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
+			const req = await GuildModel.findOne({ id: msg.guild.id });
+
+			if(!req) {
+				const doc = new GuildModel({ id: msg.guild.id });
+				await doc.save();
+				console.log('Doc Created');
+			}
+
+			const serverbioembed = new Discord.MessageEmbed({
+				title: 'New server Bio!',
+				description: `${serverbioarray}`,
+				color: msg.member.displayHexColor,
+				footer: {
+					'text': msg.author.username,
+					'icon_url': msg.author.displayAvatarURL(),
+				},
+				timestamp: Date.now(),
+			});
+			await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { serverbio: `${serverbioarray}` } }, { new: true });
+			return msg.channel.send(serverbioembed);
+		}
+		else {
+			// function roleList() {
+			// 	let roleMsg = msg.guild.roles.cache.array().length + ': ' + msg.guild.roles.cache.array().join(' ');
+			// 	if(roleMsg.length > 1024) {
+			// 		const roles = msg.guild.roles.cache.array();
+			// 		const count = 0;
+			// 		roleMsg = msg.guild.roles.cache.array().length + ': ';
+			// 		roles.forEach(r => {
+			// 			if(r.mentionable) {
+			// 				roleMsg += r + ' ';
+			// 			}
+			// 		});
+			// 	}
+			// 	return roleMsg;
+			// }
+			const past = msg.guild.createdAt;
+			const creation = calcDate(new Date(), past);
+			const server = msg.guild;
+			const req = await GuildModel.findOne({ id: server.id });
+
+			const embed = new MessageEmbed({
+				color: msg.member.displayHexColor,
+				author: { name: server.name },
+				thumbnail: {
+					url: server.iconURL(),
+				},
+				fields: [
+					{
+						name: '📑 General',
+						value: `\`\`\`MIPS\nID:\n${server.id}\nCreated:\n${creation} ago\nOwner:\n${msg.guild.owner.user.tag}\nRegion:\n${msg.guild.region}\`\`\``,
+						inline: true,
+					},
+					{
+						name: '<:clnklist1:720049449023307787> Channels',
+						value: `\`\`\`javascript\nText: ${server.channels.cache.filter(channel => channel.type == 'text').size}\nVoice: ${server.channels.cache.filter(channel => channel.type == 'voice').size}\nStore: ${server.channels.cache.filter(channel => channel.type == 'store').size}\nNews: ${server.channels.cache.filter(channel => channel.type == 'news').size}\n\nCategories: ${server.channels.cache.filter(channel => channel.type == 'category').size}\n\`\`\``,
+						inline: true,
+					},
+					{
+						name: '📊 Statistics',
+						value: `\`\`\`javascript\nMembers: ${server.members.cache.size}\nHumans: ${server.members.cache.filter(member => !member.user.bot).size}\nBots: ${server.members.cache.filter(member => member.user.bot).size}\nRoles: ${server.roles.cache.size}\n\`\`\``,
+						inline: true,
+					},
+					{
+						name: '😀 Emojis',
+						value: `\`\`\`javascript\nEmojis: ${server.emojis.cache.filter(emoji => !emoji.animated).size}\nAnimojis: ${server.emojis.cache.filter(emoji => emoji.animated).size}\n\`\`\``,
+						inline: true,
+					},
+					{
+						name: '<:clnkboost:720057574631669851> Server Boosting',
+						value: `\`\`\`javascript\nTotal Boosts: ${server.premiumSubscriptionCount}\nServer Level: ${server.premiumTier}\n\`\`\``,
+						inline: true,
+					},
+					{
+						name: '🕹️ Most Common Activity',
+						value: `\`\`\`${calcActivity()}\`\`\``,
+						inline:true,
+					},
+					{
+						name: 'Server Bio',
+						value: `\`\`\`${req.serverbio}\`\`\``,
+						inline: true,
+					},
+				],
+				timestamp: new Date(),
+				footer: {
+					text: `${msg.author.username}`,
+					icon_url: `${msg.author.displayAvatarURL()}`,
+				},
+			});
+			msg.channel.send(embed);
+		}
 	}
 	else{
 		let user = msg.mentions.members.first();
 		if(!user) user = msg.member;
+		const req = await Bio.findOne({ id: user.id });
+		if(!req) {
+			const doc = new Bio({ id: msg.author.id });
+			doc.save();
+			console.log('Doc Created');
+		}
 
-		const embed = new MessageEmbed({
+		const embed = await new MessageEmbed({
 			color: msg.member.displayHexColor,
 			author: { name: user.user.name },
 			thumbnail: {
@@ -174,6 +244,11 @@ module.exports.run = async (bot, msg, args) => {
 				icon_url: `${msg.author.displayAvatarURL()}`,
 			},
 		});
+		if(!req) {
+			let req2 = await Bio.findOne({ id: user.id });
+			embed
+				.addField('Bio', `\`\`\`${req2.bio}\`\`\``, false);
+		}
 		msg.channel.send(embed);
 	}
 };
@@ -183,6 +258,6 @@ module.exports.help = {
 	category: 'Tools',
 	reqPerms: [],
 	description: 'Posts a list of information about either the message author, or a provided user.',
-	usage: `${config.pref}info${config.suff} \\|\\| ${config.pref}info [user-mention]${config.suff} \\|\\| ${config.pref}info server${config.suff}`,
+	usage: `${config.pref}info${config.suff} || ${config.pref}info [user-mention]${config.suff} || ${config.pref}info server${config.suff} || ${config.pref}info server bio [Your server bio]${config.suff}`,
 	aliases: [],
 };

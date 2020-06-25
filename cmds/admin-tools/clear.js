@@ -8,7 +8,8 @@ module.exports.run = async (bot, msg) => {
 	if (!amount && !user) return require('../../util/errMsg.js').run(bot, msg, true, 'Must specify a user and a number of, or just a number of, messages to delete.');
 	// Fetch 100 messages (will be filtered and lowered up to max amount requested)
 	if(user) {
-		msg.channel.fetchMessages({
+		const userchannel = msg.channel;
+		userchannel.messages.fetch({
 			limit: 100,
 		}).then((messages) => {
 			if (user) {

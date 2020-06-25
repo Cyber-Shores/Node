@@ -59,7 +59,7 @@ module.exports.run = async (bot, msg, args) => {
 	}
 	slotembed
 		.setDescription(`You... ${winresult}`)
-		.setcolor(`${color}`);
+		.setColor(`${color}`);
 
 	msg.channel.send(slotembed);
 

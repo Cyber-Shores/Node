@@ -1,6 +1,6 @@
 const config = module.require('../../config.json');
 const Discord = module.require('discord.js');
-module.exports.run = async (client, msg, args) => {
+module.exports.run = async (bot, msg, args) => {
 	let num = 20;
 	if(args[0]) num = args[0];
 	const rolled = Math.floor(Math.random() * num) + 1;

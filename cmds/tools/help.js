@@ -4,6 +4,7 @@ const { Menu } = module.require('discord.js-menu');
 const git = module.require('async-git');
 
 module.exports.run = async (bot, msg, args) => {
+
 	function calcDate(date1, date2) {
 		const diff = Math.floor(date1.getTime() - date2.getTime());
 		const day = 1000 * 60 * 60 * 24;
@@ -31,7 +32,7 @@ module.exports.run = async (bot, msg, args) => {
 	const calcdategit = calcDate(new Date(), await git.date);
 	console.log(calcdategit);
 	let gitdate;
-	if(calcdategit == '0 days ') {
+	if(calcdategit.includes('0 days ')) {
 		gitdate = 'Today!';
 	}
 	else{
@@ -122,7 +123,7 @@ module.exports.run = async (bot, msg, args) => {
 						},
 						{
 							name: 'Last Updated:',
-							value: `${gitdate}`,
+							value: `${await gitdate}`,
 							inline: true,
 						},
 					],
