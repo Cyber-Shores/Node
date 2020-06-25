@@ -8,8 +8,6 @@ module.exports.run = async (bot, msg, args) => {
 	const strings = args.join(' ');
 
 	// red 1 - 18 green 19 - 20 black 21 - 38
-	console.log(`Random Number = ${randomnumber}`);
-	console.log(`${args[0]}`);
 
 	let redblackgreen;
 	let winresult;
@@ -63,8 +61,6 @@ module.exports.run = async (bot, msg, args) => {
 		.setColor(rollcolor);
 
 	msg.channel.send(embed);
-
-	console.log(`-- ${winresult} --`);
 
 	// console.log(`roulette command Logged: ${msg.author.id}`)
 

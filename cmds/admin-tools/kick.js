@@ -15,9 +15,9 @@ module.exports.run = async (bot, msg) => {
 			.kick('test command line')
 			.then(() => {
 				const kickembed = new Discord.MessageEmbed()
-					.setTitle('**The Boot**')
+					.setTitle('**User Kicked!**')
 					.setDescription(`**${user.username}** Has Recieved The Boot`)
-					.attachFiles('https://i.imgur.com/r42VJvZ.gif')
+					.attachFiles('https://i.imgur.com/NpU5kM3.gif')
 					.setColor(msg.member.displayHexColor);
 				msg.channel.send(kickembed);
 			});
