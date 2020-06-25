@@ -1,22 +1,22 @@
 require('dotenv').config();
-const config = require("./config.json");
-const Discord = require("discord.js");
-const { Client, MessageEmbed } = require('discord.js');
+import config from "./config.json";
+import { Collection, MessageEmbed as _MessageEmbed } from "discord.js";
+import { Client, MessageEmbed } from 'discord.js';
 const bot = new Client();
-const fs = require("fs");
-const mongoose = require('mongoose');
-const GuildModel = require('./models/GuildData');
+import { readdir } from "fs";
+import { connect } from 'mongoose';
+import GuildModel, { findOne, findOneAndUpdate } from './models/GuildData';
 
 
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
 // const dbl = new DBL('', bot);
 
-bot.commands = new Discord.Collection();
-bot.aliases = new Discord.Collection();
+bot.commands = new Collection();
+bot.aliases = new Collection();
 
 //start of connecting to database
 //process.env.MONGOLINK used to hide password
-mongoose.connect(process.env.MONGOLINK, {
+connect(process.env.MONGOLINK, {
     //mongo connect settings
     useNewUrlParser: true,
     useFindAndModify: false,
@@ -26,9 +26,9 @@ mongoose.connect(process.env.MONGOLINK, {
 //end
 
 //start of command reading
-fs.readdir("./cmds/", (err, folders) => {
+readdir("./cmds/", (err, folders) => {
     folders.forEach(item => {
-        fs.readdir(`./cmds/${item}`, (err, files) => {
+        readdir(`./cmds/${item}`, (err, files) => {
             if(err) console.error(err);
 
             let jsfiles = files.filter(f => f.split(".").pop() === "js");
@@ -61,7 +61,7 @@ bot.once('ready', async => {
     //end
     //Creating a doc for each guild if one is not already made
     CLIENTGUILDS.forEach(async guild => {
-        const req = await GuildModel.findOne({ id: guild.id });
+        const req = await findOne({ id: guild.id });
         if (req) return;
     const doc = new GuildModel({ id: guild.id });
         await doc.save();
@@ -77,7 +77,7 @@ bot.on('guildCreate', async joinedGuild => {
     bot.user.setActivity(`For prefix in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
     //end
     //creating a doc for each guild joined while on.
-    const req = await GuildModel.findOne({ id: joinedGuild.id });
+    const req = await findOne({ id: joinedGuild.id });
         if (req) return;
     const doc = new GuildModel({ id: joinedGuild.id });
         await doc.save();
@@ -89,7 +89,7 @@ bot.on('guildCreate', async joinedGuild => {
 //Stuff to do on guild leave
 bot.on('guildDelete', async joinedGuild => {
     //deletes server from db
-    const req = await GuildModel.findOne({ id: joinedGuild.id });
+    const req = await findOne({ id: joinedGuild.id });
         if (!req) return;
         await req.deleteOne({ id: joinedGuild.id, fuction(err) {
             if(err) throw err;
@@ -107,9 +107,9 @@ bot.on('message', async msg => {
     //rudementary command handler
     if (msg.content === '<prefix>') {
 
-        const req = await GuildModel.findOne({ id: msg.guild.id });
+        const req = await findOne({ id: msg.guild.id });
         if (!req) return msg.reply('Sorry! doc doesnt exist.');
-        let prefixembed = new Discord.MessageEmbed({
+        let prefixembed = new _MessageEmbed({
             title: `Server Prefix & Suffiix:`,
             description: `Prefix:  ${req.prefix}\nSuffix:  ${req.suffix}\n`,
             color: msg.member.displayHexColor,
@@ -129,11 +129,11 @@ bot.on('message', async msg => {
         if(args[1].length > 2 || args[2].length > 2) return require('./util/errMsg').run(bot, msg, true, "Neither the prefix nor the suffix can be over 2 charachters long!");
         //setting a new prefix using the default one
         if(!msg.member.hasPermission("ADMINISTRATOR")) return require('./util/errMsg').run(bot, msg, false, "You do not have proper premissions.");
-        const req = await GuildModel.findOne({ id: msg.guild.id });
+        const req = await findOne({ id: msg.guild.id });
         if(!req) return msg.reply('Sorry there was an error!');
-        await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: `${args[2]}`}}, { new: true});
-        await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: `${args[1]}`}}, { new: true});
-        let setprefixembed = await new Discord.MessageEmbed({
+        await findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: `${args[2]}`}}, { new: true});
+        await findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: `${args[1]}`}}, { new: true});
+        let setprefixembed = await new _MessageEmbed({
             title: `New Prefix and Suffix`,
             description: `Prefix: ${args[1]}\nSuffix: ${args[2]}\n`,
             color: msg.member.displayHexColor,
@@ -158,7 +158,7 @@ bot.on('ready', async () => {
 
 // Primary command identifier
 bot.on("message", async msg => {
-    const req = await GuildModel.findOne({ id: msg.guild.id });
+    const req = await findOne({ id: msg.guild.id });
 
     if(msg.author.bot) return;
     if(msg.channel.type === "dm") return;
