@@ -11,8 +11,8 @@ const GuildModel = require('./models/GuildData');
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
 // const dbl = new DBL('', bot);
 
-bot.commands = new Collection();
-bot.aliases = new Collection();
+bot.commands = new Discord.Collection();
+bot.aliases = new Discord.Collection();
 
 // start of connecting to database
 // process.env.MONGOLINK used to hide password
