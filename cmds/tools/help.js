@@ -1,7 +1,7 @@
 const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
 const { Menu } = module.require('discord.js-menu');
-const git = module.require('async-git');
+//const git = module.require('async-git');
 
 module.exports.run = async (bot, msg, args) => {
 
@@ -29,17 +29,17 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 
-	const calcdategit = calcDate(new Date(), await git.date);
-	console.log(calcdategit);
-	let gitdate;
-	if(calcdategit.includes('0 days ')) {
-		gitdate = 'Today!';
-	}
-	else{
-		gitdate = `${calcDate(new Date(), await git.date)} ago`;
-	}
+	// const calcdategit = calcDate(new Date(), await git.date);
+	// console.log(calcdategit);
+	// let gitdate;
+	// if(calcdategit.includes('0 days ')) {
+	// 	gitdate = 'Today!';
+	// }
+	// else{
+	// 	gitdate = `${calcDate(new Date(), await git.date)} ago`;
+	// }
 
-	const tagsarray = await git.tags;
+	//const tagsarray = await git.tags;
 
 	const m = await msg.channel.send('```Generating menu...```');
 	if (!args[0]) {
@@ -111,21 +111,21 @@ module.exports.run = async (bot, msg, args) => {
 							value: '```dom#9445```',
 							inline: true,
 						},
-						{
-							name: 'Orginization:',
-							value: await git.owner,
-							inline: true,
-						},
-						{
-							name: 'Version:',
-							value: await tagsarray.slice(-1)[0],
-							inline: true,
-						},
-						{
-							name: 'Last Updated:',
-							value: `${await gitdate}`,
-							inline: true,
-						},
+						// {
+						// 	name: 'Orginization:',
+						// 	value: await git.owner,
+						// 	inline: true,
+						// },
+						// {
+						// 	name: 'Version:',
+						// 	value: await tagsarray.slice(-1)[0],
+						// 	inline: true,
+						// },
+						// {
+						// 	name: 'Last Updated:',
+						// 	value: `${await gitdate}`,
+						// 	inline: true,
+						// },
 					],
 				}),
 				reactions: {
