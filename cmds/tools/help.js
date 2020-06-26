@@ -111,7 +111,7 @@ module.exports.run = async (bot, msg, args) => {
 							value: '```kal9000#0867```',
 							inline: true,
 						},
-						{
+						// {
 						// 	name: 'Orginization:',
 						// 	value: await git.owner,
 						// 	inline: true,
