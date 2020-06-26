@@ -108,24 +108,24 @@ module.exports.run = async (bot, msg, args) => {
 						},
 						{
 							name: 'Lead Artist:',
-							value: '```dom#9445```',
+							value: '```kal9000#0867```',
 							inline: true,
 						},
 						{
-							name: 'Orginization:',
-							value: await git.owner,
-							inline: true,
-						},
-						{
-							name: 'Version:',
-							value: await tagsarray.slice(-1)[0],
-							inline: true,
-						},
-						{
-							name: 'Last Updated:',
-							value: `${await gitdate}`,
-							inline: true,
-						},
+						// 	name: 'Orginization:',
+						// 	value: await git.owner,
+						// 	inline: true,
+						// },
+						// {
+						// 	name: 'Version:',
+						// 	value: await tagsarray.slice(-1)[0],
+						// 	inline: true,
+						// },
+						// {
+						// 	name: 'Last Updated:',
+						// 	value: `${await gitdate}`,
+						// 	inline: true,
+						// },
 					],
 				}),
 				reactions: {
