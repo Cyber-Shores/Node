@@ -13,29 +13,45 @@ module.exports.run = async (bot, msg, args) => {
 	let winresult;
 	let rollcolor;
 
-	if(randomnumber <= 18) redblackgreen = 'Red';
-	if(randomnumber >= 19 && randomnumber <= 20) redblackgreen = 'Green';
-	if(randomnumber >= 21) redblackgreen = 'Black';
 
+
+	if(randomnumber <= 18) {
+		redblackgreen = 'Red';
+	}else if(randomnumber >= 19 && randomnumber <= 20) {
+		redblackgreen = 'Green';
+	}else if(randomnumber >= 21) {
+		redblackgreen = 'Black';
+	}
 	// betting on green
 	if(args[1] == 19) return msg.channel.send('If you wish to bet on 19 or 20 please bet on green');
 	if(args[1] == 20) return msg.channel.send('If you wish to bet on 19 or 20 please bet on green');
 
 	// Win result for Red
-	if(redblackgreen == 'Red' && args[0] == 'red') winresult = 'Win';
-	if(redblackgreen !== 'Red' && args[0] == 'red') winresult = 'Lose';
+	if(redblackgreen == 'Red' && args[0] == 'red') {
+		 inresult = 'Win';
+	}else if(redblackgreen !== 'Red' && args[0] == 'red') {
+		winresult = 'Lose';
+	}
 
 	// Win result for green
-	if(redblackgreen == 'Green' && args[0] == 'green') winresult = 'Win';
-	if(redblackgreen !== 'Green' && args[0] == 'green') winresult = 'Lose';
-
+	if(redblackgreen == 'Green' && args[0] == 'green') {	
+		winresult = 'Win';
+	}else if(redblackgreen !== 'Green' && args[0] == 'green') {
+		winresult = 'Lose';
+	}
 	// Win result for Black
-	if(redblackgreen == 'Black' && args[0] == 'black') winresult = 'Win';
-	if(redblackgreen !== 'Black' && args[0] == 'black') winresult = 'Lose';
+	if(redblackgreen == 'Black' && args[0] == 'black') {
+		winresult = 'Win';
+	}else if(redblackgreen !== 'Black' && args[0] == 'black') {
+		winresult = 'Lose';
+	}
 
 	// Win result for number
-	if(args[0] == 'number' && args[1] == randomnumber) winresult = 'Win';
-	if(args[0] == 'number' && args[1] !== randomnumber) winresult = 'Lose';
+	if(args[0] == randomnumber) {
+		winresult = 'Win';
+	}else if(args[0]!== randomnumber) {
+		winresult = 'Lose';
+	}
 
 	// Embed color dependent on role
 	if(redblackgreen == 'Red') rollcolor = '#D71616';
@@ -55,7 +71,7 @@ module.exports.run = async (bot, msg, args) => {
 		.setTitle('Roulette')
 		.setDescription('Your Results')
 		.addField('Your Bet', `You bet on ${strings}`, true)
-		.addField('Number Result', `${randomnumber}`, true)
+		.addField('Number Result', `-- ${randomnumber} --`, true)
 		.addField('Red, Black, or Green', `${redblackgreen}`, true)
 		.addField('Result', `You ${winresult}`, true)
 		.setColor(rollcolor);
@@ -71,6 +87,6 @@ module.exports.help = {
 	category: 'Gambling',
 	reqPerms: [],
 	description: 'Roll the Dice with a game of roulette',
-	usage: `${config.pref}roulette [green|-|number|-|red|-|black|-|odds] [*1-36*]${config.suff}`,
+	usage: `${config.pref}roulette [green|-|*1-36*|-|red|-|black|-|odds]${config.suff}`,
 	aliases: ['roll'],
 };
