@@ -7,7 +7,9 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mon": "nodemon bot.js",
+    "ts": "tsc && node bot.js"
   },
   "author": "Cyber Shores",
   "license": "MIT",
