@@ -31,7 +31,7 @@ module.exports.help = {
 	name: 'invite',
 	category: 'Tools',
 	reqPerms: [],
-	description: 'Posts a list of all users of this bot whose usernames contain a certain provided string of text.',
+	description: 'Sends an invite link',
 	usage: `${config.pref}invite${config.suff}`,
 	aliases: ['link'],
 };
