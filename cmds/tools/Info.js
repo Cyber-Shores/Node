@@ -5,6 +5,8 @@ const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
 
 module.exports.run = async (bot, msg, args) => {
+	let user = msg.mentions.members.first();
+
 	function calcActivity() {
 		const presenceArr = [];
 
@@ -199,15 +201,17 @@ module.exports.run = async (bot, msg, args) => {
 			msg.channel.send(embed);
 		}
 	}
-	else{
-		let user = msg.mentions.members.first();
+	else {
+		
 		if(!user) user = msg.member;
 		const req = await Bio.findOne({ id: user.id });
 		if(!req) {
-			const doc = new Bio({ id: msg.author.id });
-			doc.save();
+			const doc = new Bio({ id: user.id });
+			await doc.save();
 			console.log('Doc Created');
-		}
+		} else if(!req && user) return msg.channel.send('TEST');
+
+		let req2 = await Bio.findOne({ id: user.id });
 
 		const embed = await new MessageEmbed({
 			color: msg.member.displayHexColor,
@@ -237,6 +241,11 @@ module.exports.run = async (bot, msg, args) => {
 					value: `\`\`\`javascript\n${user.user.presence.status}\`\`\``,
 					inline: true,
 				},
+				{
+					name: 'User Bio:',
+					value: `\`\`\`${req2.bio}\`\`\``,
+					inline: false,
+				}
 			],
 			timestamp: new Date(),
 			footer: {
@@ -244,6 +253,7 @@ module.exports.run = async (bot, msg, args) => {
 				icon_url: `${msg.author.displayAvatarURL()}`,
 			},
 		});
+		msg.channel.send(embed)
 	}
 };
 
