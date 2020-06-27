@@ -5,7 +5,7 @@ import { Client, Message, Permissions, MessageEmbed, BitField, PermissionString 
 export async function run (bot: Client, msg: Message, args) { // URL = https://discord.com/oauth2/authorize?client_id={CLIENID}&permissions={BITFIELD}&scope=bot
 	if(args[0] == "permissions")
 		return msg.channel.send(new MessageEmbed().setDescription("🚩 All the permission flags:\n\`\`\`" + Object.keys(Permissions.FLAGS).join("\n") + "\`\`\`").setTitle("Permissions").setColor(msg.member.displayHexColor).setFooter(msg.member.nickname || msg.author.username, msg.author.avatarURL()).setTimestamp())
-	
+
 	args = args.map(_ => _.replace(",", ""))
 	let bF = msg.guild.me.permissions
 
