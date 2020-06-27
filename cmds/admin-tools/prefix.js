@@ -22,6 +22,7 @@ module.exports.run = async (bot, msg, args) => {
 	else if(args[0] == 'set') {
 		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg').run(bot, msg, false, 'You do not have proper premissions.');
 		if(!args[1] || !args[2]) return require('../../util/errMsg').run(bot, msg, true, 'Please provide both a prefix and a suffix!');
+		if(args[1] == '-'|| args[2] == '-') return require('../../util/errMsg').run(bot, msg, true, 'Your chosen prefix is prohibited!');
 		if(args[1].length > 2 || args[2].length > 2) return require('../../util/errMsg').run(bot, msg, true, 'Neither the prefix nor the suffix can be over 2 characters long!');
 		// setting a new prefix using the default one
 		const req = await GuildModel.findOne({ id: msg.guild.id });
