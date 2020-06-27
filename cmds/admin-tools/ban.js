@@ -8,6 +8,10 @@ module.exports.run = async (bot, msg) => {
 
 	// checking if command is valid to run by user
 	if(!user) return require('../../util/errMsg.js').run(bot, msg, true, 'Please mention a user');
+	if(!msg.guild.me.hasPermission('BAN_MEMBERS')) {
+		require('../../util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.');
+		return require('../../util/suggestMsg.js').run(bot, msg, 'Either add the permission \`BAN_MEMBERS\` or reinvite the bot using the command ' + `\`${config.pref}invitation BAN_MEMBERS${config.suff}\``);
+	}
 	if(!msg.member.hasPermission('BAN_MEMBERS')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper premissions.');
 	if(user.id === msg.author.id) return require('../../util/errMsg.js').run(bot, msg, false, 'You cannot ban yourself.');
 	if(member.roles.highest.position >= msg.member.roles.highest.position) return require('../../util/errMsg.js').run(bot, msg, false, `You cannot kick ${user.username} because they have higher roles than you.`);
