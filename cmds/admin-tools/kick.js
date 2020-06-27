@@ -1,7 +1,7 @@
 const config = module.require('../../config.json');
 const Discord = module.require('discord.js');
 // eslint-disable-next-line no-unused-vars
-module.exports.run = async (bot, msg) => {
+module.exports.run = async (bot, msg) => { // TODO: What to do if bot cant kick
 	const user = msg.mentions.users.first();
 	const member = msg.guild.member(user);
 

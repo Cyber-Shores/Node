@@ -18,8 +18,9 @@ Feedback, bug reports, and comments are not only welcome, but strongly encourage
 >- Creators
 > 	- [@Ravenr_#9014](https://github.com/Ravenwulf "All Hail The Raven Hegemon")
 > 	- [@Washi#1131](https://github.com/Washiil "A promising young padawan")
+>   - [@Hamzinii#9746](https://github.com/Hamziniii "An untangible skeleton wearing a top hat...")
 >- Inspiration
-> 	- [@Hamzinii#9746](https://github.com/Hamziniii "A slice of ham wearing a top hat...")
+> 	- [@Hamzinii#9746](https://github.com/Hamziniii "A floating top hat on a floating turnip...")
 >
 >### Art
 >

@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 const config = module.require('../../config.json');
 const ms = module.require('ms');
-module.exports.run = async (bot, msg, args) => {
+module.exports.run = async (bot, msg, args) => { // TODO: What if you cant add roles (im too tired to add the todos for all the other files)
 
 	if(!msg.member.hasPermission('MANAGE_MESSAGES')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper premissions.');
 

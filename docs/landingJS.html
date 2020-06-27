@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Node - Under The Hood</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="https://ravenwulf.github.io/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="https://ravenwulf.github.io/assets/css/noscript.css" /></noscript>
+		<link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+		<link rel="manifest" href="./images/site.webmanifest">
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+				<header id="header" class="alt style4">
+					<a href="index.html" class="logo"><strong>Node</strong> <span>Bot</span></a>
+					<nav>
+						<a href="#menu">Menu</a>
+					</nav>
+				</header>
+
+			<!-- Menu -->
+				<nav id="menu">
+					<ul class="links">
+						<li><a href="index.html">Home</a></li>
+						<li><a href="landingDiscord.html">Commands & Usage</a></li>
+						<li><a href="landingCollab.html">Contributers</a></li>
+						<li><a href="landingSupport.html">Supporters</a></li>
+						<li><a href="landingJS.html">Under The Hood</a></li>
+					</ul>
+				</nav>
+
+				<!-- Banner -->
+				<!-- Note: The "styleN" class below should match that of the header element. -->
+					<section id="banner" class="style4">
+						<div class="inner">
+							<span class="image">
+								<img src="images/nodeBlog.png" alt="" />
+							</span>
+							<header class="major">
+								<h1>Under The Hood</h1>
+							</header>
+							<div class="content">
+								<p>What makes Node work?</p>
+							</div>
+						</div>
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Two -->
+							<section id="two" class="spotlights">
+								<section>
+									<a href="https://nodejs.org/en/" class="image">
+										<img src="images/node-logo.svg" height="400" width="400" alt="" data-position="center center" />
+									</a>
+									<div class="content">
+										<div class="inner">
+											<header class="major">
+												<h3>Node.js</h3>
+											</header>
+											<p>
+												The bot is written in JavaScript using Node.js. <p></p>
+												Node.js is a JavaScript runtime built on <a href="https://v8.dev/">Chrome's V8 JavaScript engine.</a>
+												As an asynchronous event-driven JavaScript runtime, Node.js is designed to build scalable network applications.
+											</p>
+											<p>
+												Node.js is also the reference behind bots likeness.
+											</p>
+											<ul class="actions">
+												<li><a href="https://nodejs.org/en/" class="button">Learn more</a></li>
+											</ul>
+										</div>
+									</div>
+								</section>
+								<section>
+									<div class="content">
+										<div class="outer">
+											<p>
+												in this "hello world" example, many connections can be handled concurrently. 
+												Upon each connection, the callback is fired, but if there is no work to be done, Node.js will sleep.
+											</p>
+										</div>
+									</div>
+									<div class="content">
+										<div class="inner">
+											<pre><code>const http = require('http');
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer((req, res) => {
+	res.statusCode = 200;
+	res.setHeader('Content-Type', 'text/plain');
+	res.end('Hello World');
+});
+
+server.listen(port, hostname, () => {
+	console.log(`Server running at http://${hostname}:${port}/`);
+});</code></pre>
+										</div>
+									</div>
+								</section>
+								<section>
+									<a href="https://discord.js.org/#/" class="image">
+										<img src="images/DiscordJS.png" height="400" width="400" alt="" data-position="top center" />
+									</a>
+									<div class="content">
+										<div class="inner">
+											<header class="major">
+												<h3>Discord.js</h3>
+											</header>
+											<p>
+												The bot uses discord.js to interact with the discord API. <p></p>
+												discord.js is a powerful <a href="https://nodejs.org/">node.js</a> module that allows Node 
+												to interact with the <a href="https://discordapp.com/developers/docs/intro">Discord API</a> 
+												very easily. It takes a much more object-oriented approach than most other JS Discord 
+												libraries, making Node's <a href="https://github.com/Cyber-Shores/Node">(open source)</a> code significantly tidier and easier to comprehend.
+											</p>
+											<ul class="actions">
+												<li><a href="https://discord.js.org/#/" class="button">Learn more</a></li>
+											</ul>
+										</div>
+									</div>
+								</section>
+								<section>
+									<div class="content">
+										<div class="outer">
+											<h3>Why?</h3>
+											<ul>
+												<li>Object-oriented</li>
+												<li>Speedy and efficient</li>
+												<li>Feature-rich</li>
+												<li>Flexible</li>
+												<li>100% Promise-based</li>
+											</ul>
+										</div>
+									</div>
+									<div class="content">
+										<div class="inner">
+											<pre><code>const Discord = require('discord.js');
+const client = new Discord.Client();
+
+client.on('ready', () => {
+	console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('message', msg => {
+	if (msg.content === 'ping') {
+		msg.reply('Pong!');
+	}
+});
+
+client.login('token');</code></pre>
+										</div>
+									</div>
+								</section>
+								<section>
+									<a href="https://www.mongodb.com/" class="image">
+										<img src="images/mongodb.svg" height="400" width="400" alt="" data-position="25% 25%" />
+									</a>
+									<div class="content">
+										<div class="inner">
+											<header class="major">
+												<h3>MongoDB</h3>
+											</header>
+											<p>
+												MongoDB is a general purpose, document-based, distributed database built for modern application developers and for the cloud era.
+												Node uses MongoDB to store information that is used by the functions of the bot e.g. custom server prefixes and user bios.
+											</p>
+											<ul class="actions">
+												<li><a href="https://www.mongodb.com/what-is-mongodb" class="button">Learn more</a></li>
+											</ul>
+										</div>
+									</div>
+								</section>
+								<section>
+									<a href="https://www.heroku.com/home" class="image">
+										<img src="images/heroku.svg" height="400" width="400" alt="" data-position="25% 25%" />
+									</a>
+									<div class="content">
+										<div class="inner">
+											<header class="major">
+												<h3>Heroku</h3>
+											</header>
+											<p>
+												Heroku is a container-based cloud Platform as a Service (PaaS). Developers use Heroku to deploy, manage, and scale modern apps. Node is deployed using heroku in order to maintain a 24/7 uptime without the need to manage servers.
+											</p>
+											<ul class="actions">
+												<li><a href="https://www.heroku.com/about" class="button">Learn more</a></li>
+											</ul>
+										</div>
+									</div>
+								</section>
+							</section>
+					</div>
+
+				<!-- Contact -->
+				<section id="contact">
+					
+					<div class="inner">
+						<section class="split">
+							<section>
+								<div class="contact-method">
+									
+									<a href="https://discordapp.com/oauth2/authorize?client_id=722615667064569867&scope=bot&permissions=2146958839">
+										<span class="icon solid alt fa-envelope">
+										</span><h3>Add The Bot!</h3>
+									</a>
+								</div>
+								<div class="contact-method">
+									<a href="https://discord.gg/GUvk7Qu">
+										<span class="icon solid alt fa-home"></span>
+										<h3>Join The Server!</h3>
+									</a>
+								</div>
+							</section>
+						</section>
+					</div>
+				</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<!-- <ul class="icons">
+								<li><a href="https://github.com/Ravenwulf" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								<li><a href="https://discordapp.com/oauth2/authorize?client_id=672971021393068033&scope=bot&permissions=8" class="icon brands alt fa-discord"><span class="label">Discord</span></a></li>
+								<li><a href="https://stackoverflow.com/users/12121428/ravenr" class="icon brands alt fa-stack-overflow"><span class="label">Stack Overflow</span></a></li>
+								<li><a href="https://codepen.io/Ravenr_" class="icon brands alt fa-codepen"><span class="label">Code Pen</span></a></li>
+								<li><a href="https://www.reddit.com/user/Jackjackson401" class="icon brands alt fa-reddit"><span class="label">Reddit</span></a></li>
+							</ul> -->
+							<ul class="copyright">
+								<li>&copy; <a href="https://github.com/Cyber-Shores">Cyber Shores</a></li><li>Design: <a href="https://github.com/Ravenwulf">Ravenr_</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="https://ravenwulf.github.io/assets/js/jquery.min.js"></script>
+			<script src="https://ravenwulf.github.io/assets/js/jquery.scrolly.min.js"></script>
+			<script src="https://ravenwulf.github.io/assets/js/jquery.scrollex.min.js"></script>
+			<script src="https://ravenwulf.github.io/assets/js/browser.min.js"></script>
+			<script src="https://ravenwulf.github.io/assets/js/breakpoints.min.js"></script>
+			<script src="https://ravenwulf.github.io/assets/js/util.js"></script>
+			<script src="https://ravenwulf.github.io/assets/js/main.js"></script>
+
+	</body>
+</html>
