@@ -94,7 +94,7 @@ module.exports.run = async (bot, msg, args) => {
 					fields: [
 						{
 							name: 'Developers:',
-							value: `\`\`\`${bot.users.cache.get('265499320894095371').tag}\n${bot.users.cache.get('568087768530419732').tag}\`\`\``,
+							value: `\`\`\`${bot.users.cache.get('265499320894095371').tag}\n${bot.users.cache.get('568087768530419732').tag}\n${bot.users.cache.get('393247221505851412').tag}\`\`\``,
 							inline: true,
 							// (Each page can only have 20 reactions, though. Discord's fault.)
 						},
