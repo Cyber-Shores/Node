@@ -219,6 +219,8 @@ bot.on('message', async msg => {
 	// end
 });
 // end
-// test bot if not in production, this is just so i can learn -- Hamziniii 🎩
-const PRODUCTION = true
-PRODUCTION ? bot.login(process.env.TOKEN) : bot.login(process.env.TESTTOKEN);
+// test bot if not in production, defaualts to production -- Hamziniii 🎩
+if(process.env.PRODUCTION != undefined)
+	process.env.PRODUCTION ? bot.login(process.env.TOKEN) : bot.login(process.env.TESTTOKEN)
+else 
+	bot.login(process.env.TOKEN)
