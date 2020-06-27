@@ -12,7 +12,7 @@ module.exports.run = async (bot, msg, text) => {
         },
         timestamp: Date.now()
     });
-    msg.channel.send(embed);
+    return msg.channel.send(embed);
 }
 // This is useful for suggestions that are not warnings or errors per se -- Hamziniii 🎩
 module.exports.help = {
