@@ -244,12 +244,6 @@ module.exports.run = async (bot, msg, args) => {
 				icon_url: `${msg.author.displayAvatarURL()}`,
 			},
 		});
-		if(!req) {
-			let req2 = await Bio.findOne({ id: user.id });
-			embed
-				.addField('Bio', `\`\`\`${req2.bio}\`\`\``, false);
-		}
-		msg.channel.send(embed);
 	}
 };
 
