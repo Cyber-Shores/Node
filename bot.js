@@ -129,13 +129,18 @@ bot.on('guildDelete', async joinedGuild => {
 // Final ready
 bot.on('ready', async () => {
 	console.log(`${bot.user.username} is online!`);
+	if(TYPE == "TEST")
+		console.log("Default prefix is: <!")
+	else if(TYPE = "TEST2")
+		console.log("Default prefix is: <!!")
+	else if(TYPE = "PRODUCTION")
+		console.log("Default prefix is: <")
 });
 // end
 
 // Primary command identifier
 bot.on('message', async msg => {
 	const req = await GuildModel.findOne({ id: msg.guild.id });
-	
 	if(TYPE == "TEST")
 		req.prefix = "<!"
 	else if(TYPE = "TEST2")
