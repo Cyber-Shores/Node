@@ -1,5 +1,5 @@
 const config = module.require('../../config.json');
-module.exports.run = async (bot, msg) => { // TODO: Catch no manage message perms
+module.exports.run = async (bot, msg) => {
 	const NONADMINMAX = 10 // The amount of messages that people without admin but with manage message perms can delete
 	if(!msg.member.hasPermission('MANAGE_MESSAGES')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper perms');
 	const user = msg.mentions.users.first();
