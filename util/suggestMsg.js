@@ -1,7 +1,7 @@
 const Discord = module.require("discord.js");
 const { Client, MessageEmbed } = module.require('discord.js');
 const config = module.require("../config.json");
-module.exports.run = async (bot, msg, text) => {
+module.exports.run = async (bot, msg, text, del = false) => {
     let embed = new MessageEmbed({
         title: "**Notice**",
         description: `🔍 ${text}`,
@@ -12,7 +12,10 @@ module.exports.run = async (bot, msg, text) => {
         },
         timestamp: Date.now()
     });
-    return msg.channel.send(embed);
+    let sent = msg.channel.send(embed)
+    if(del)
+        sent.then(_ => _.delete({timeout: 5000}))
+    return sent
 }
 // This is useful for suggestions that are not warnings or errors per se -- Hamziniii 🎩
 module.exports.help = {
