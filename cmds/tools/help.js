@@ -6,7 +6,7 @@ const info = getRepoInfo();
 
 
 module.exports.run = async (bot, msg, args) => {
-
+	console.log(info)
 	function calcDate(date1, date2) {
 		const diff = Math.floor(date1.getTime() - date2.getTime());
 		const day = 1000 * 60 * 60 * 24;
