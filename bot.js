@@ -240,7 +240,7 @@ if(process.env.PRODUCTION != undefined) {
 			TYPE = "TEST2"
 			bot.login(process.env.TEST2TOKEN)
 		} else {
-			TYPE = "TEST1"
+			TYPE = "TEST"
 			bot.login(process.env.TESTTOKEN)
 	}
 } else {
