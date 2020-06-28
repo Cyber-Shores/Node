@@ -6,7 +6,7 @@ const bot = new Client();
 const fs = require('fs');
 const mongoose = require('mongoose');
 const GuildModel = require('./models/GuildData');
-
+let TYPE = "PRODUCTION" // either PRODUCTION, TEST, or TEST2
 
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
 // const dbl = new DBL('', bot);
@@ -135,6 +135,11 @@ bot.on('ready', async () => {
 // Primary command identifier
 bot.on('message', async msg => {
 	const req = await GuildModel.findOne({ id: msg.guild.id });
+	
+	if(TYPE == "TEST")
+		req.prefix = "<!"
+	else if(TYPE = "TEST2")
+		req.prefix = "<!!"
 
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
@@ -221,7 +226,19 @@ bot.on('message', async msg => {
 });
 // end
 // test bot if not in production, defaualts to production -- Hamziniii 🎩
-if(process.env.PRODUCTION != undefined)
-	process.env.PRODUCTION == "true" ? bot.login(process.env.TOKEN) : process.env.TEST2TOKEN ? bot.login(process.env.TEST2TOKEN) : bot.login(process.env.TESTTOKEN)
-else 
+if(process.env.PRODUCTION != undefined) {
+	if(process.env.PRODUCTION == "true") {
+		TYPE = "PRODUCTION"
+		bot.login(process.env.TOKEN)
+	} else
+		if(process.env.TEST2TOKEN) {
+			TYPE = "TEST2"
+			bot.login(process.env.TEST2TOKEN)
+		} else {
+			TYPE = "TEST1"
+			bot.login(process.env.TESTTOKEN)
+	}
+} else {
+	TYPE = "PRODUCTION"
 	bot.login(process.env.TOKEN)
+}
