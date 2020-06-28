@@ -7,6 +7,8 @@ const discord_js_1 = require("discord.js");
 async function run(bot, msg, args) {
     if (args[0] == "permissions")
         return msg.channel.send(new discord_js_1.MessageEmbed().setDescription("🚩 All the permission flags:\n\`\`\`" + Object.keys(discord_js_1.Permissions.FLAGS).join("\n") + "\`\`\`").setTitle("Permissions").setColor(msg.member.displayHexColor).setFooter(msg.member.nickname || msg.author.username, msg.author.avatarURL()).setTimestamp());
+    if (args[0] == "current")
+        return msg.channel.send(new discord_js_1.MessageEmbed().setDescription("🔓 Current Permissions:\n" + msg.guild.me.permissions.toArray().join("\n")).setTitle("Current Permissions").setColor(msg.member.displayHexColor).setFooter(msg.member.nickname || msg.author.username, msg.author.avatarURL()).setTimestamp());
     args = args.map(_ => _.replace(",", ""));
     let bF = msg.guild.me.permissions;
     if (!args.every(_ => discord_js_1.Permissions.FLAGS[_]))
