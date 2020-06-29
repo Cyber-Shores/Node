@@ -1,30 +1,51 @@
 const Discord = module.require('discord.js');
 const config = module.require('../../config.json');
-const randomPuppy = require('random-puppy');
+const sf = require('snekfetch');
+
 module.exports.run = async (bot, msg, args) => {
 	if(!args[0]) return msg.channel.send('Please provide a subreddit name');
 	const m = await msg.channel.send('```Generating image...```');
-	const subreddits = [
-		'memes',
-		'me_irl',
-		'meirl',
-		'dankmemes',
-		'meme',
-	];
 
-	const randomsubreddit = subreddits[Math.floor(Math.random() * subreddits.length)];
+	sf.get(`https://www.reddit.com/r/${args[0]}/random.json?limit=1`).then(res => {
+		if(!res.body) {
+			m.delete();
+			return msg.channel.send(`No Post could be found!`)
+		}
+		const url = res.body[0].data.children[0].data.url
+		// console.log(res.body[0].data.children[0].data.over_18)
+		// console.log(msg.channel.nsfw)
 
-	if(!args[0]) args[0] = `${randomsubreddit}`;
+		if(res.body[0].data.children[0].data.over_18 == true) {
+			if(msg.channel.nsfw) {
+				const nsfwembed = new Discord.MessageEmbed();
+				nsfwembed
+					.setTitle(`Post From r/${args[0]}`)
+					.setColor(msg.author.displayHexColor)
+					.setImage(url)
 
-	randomPuppy(args[0])
-		.then(url => {
-			const embed = new Discord.MessageEmbed()
-				.setTitle(`Random Post From ${args[0]}`)
-				.setImage(url)
-				.setColor(msg.author.displayHexColor);
-			msg.channel.send(embed);
-		});
-	m.delete();
+				
+				m.delete();
+				return msg.channel.send(nsfwembed)
+			}else{
+				m.delete();
+				return require('../../util/errMsg.js').run(bot, msg, false, 'This channel is not NSFW!');
+			}
+		}
+
+		const sfwembed = new Discord.MessageEmbed();
+				sfwembed
+					.setTitle(`Post From r/${args[0]}`)
+					.setColor(msg.author.displayHexColor)
+					.setImage(url)
+		m.delete();
+		msg.channel.send(sfwembed)
+		console.log(url)
+
+		
+		
+		
+		
+	});
 };
 
 module.exports.help = {
