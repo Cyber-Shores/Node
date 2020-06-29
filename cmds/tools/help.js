@@ -4,6 +4,7 @@ const { Menu } = module.require('discord.js-menu');
 const axios = require("axios")
 
 module.exports.run = async (bot, msg, args) => {
+	console.log(info)
 	function calcDate(date1, date2) {
 		const diff = Math.floor(date1.getTime() - date2.getTime());
 		const day = 1000 * 60 * 60 * 24;
