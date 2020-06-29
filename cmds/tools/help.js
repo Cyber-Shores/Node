@@ -1,12 +1,9 @@
 const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
 const { Menu } = module.require('discord.js-menu');
-const getRepoInfo = require('git-repo-info');
-const info = getRepoInfo();
-
+const axios = require("axios")
 
 module.exports.run = async (bot, msg, args) => {
-
 	function calcDate(date1, date2) {
 		const diff = Math.floor(date1.getTime() - date2.getTime());
 		const day = 1000 * 60 * 60 * 24;
@@ -34,6 +31,8 @@ module.exports.run = async (bot, msg, args) => {
 	
 
 	const m = await msg.channel.send('```Generating menu...```');
+	// const info = (await (await fetch('https://api.github.com/repos/Cyber-Shores/Node/tags')).json())[0].name
+	const info = (await axios.get('https://api.github.com/repos/Cyber-Shores/Node/tags')).data[0].name
 	if (!args[0]) {
 		const embed = new MessageEmbed({
 			title: 'Help',
@@ -105,7 +104,7 @@ module.exports.run = async (bot, msg, args) => {
 						},
 						{
 							name: 'Node Version:',
-							value: `**${info.lastTag}**`,
+							value: `**${info}**`,
 							inline: true,
 						},
 						// {
@@ -153,7 +152,7 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
 	name: 'help',
 	category: 'Tools',
-	reqPerms: [],
+	reqPerms: ['MANAGE_MESSAGES'],
 	description: 'Menu with info about this bot and usage of its commands',
 	usage: `${config.pref}help${config.suff} || ${config.pref}help [command]${config.suff}`,
 	aliases: ['h'],
