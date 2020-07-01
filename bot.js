@@ -6,7 +6,13 @@ const bot = new Client();
 const fs = require('fs');
 const mongoose = require('mongoose');
 const GuildModel = require('./models/GuildData');
+const { maxHeaderSize } = require('http');
+const wait = require('./util/wait').run
+const queueMessage = require('./util/queueMessage.js').run
+
 let TYPE = "PRODUCTION" // either PRODUCTION, TEST, or TEST2
+
+var queue = [] // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
 // const dbl = new DBL('', bot);
@@ -14,7 +20,7 @@ let TYPE = "PRODUCTION" // either PRODUCTION, TEST, or TEST2
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
-// start of connecting to database
+//#region start of connecting to database
 // process.env.MONGOLINK used to hide password
 mongoose.connect(process.env.MONGOLINK, {
 	// mongo connect settings
@@ -23,9 +29,9 @@ mongoose.connect(process.env.MONGOLINK, {
 	useUnifiedTopology: true,
 	// end
 }).then(console.log('\nMongoDB connected!\n'));
-// end
+//#endregion end
 
-// start of command reading
+//#region start of command reading
 fs.readdir('./cmds/', (err, folders) => {
 	folders.forEach(item => {
 		fs.readdir(`./cmds/${item}`, (err, files) => {
@@ -51,9 +57,9 @@ fs.readdir('./cmds/', (err, folders) => {
 
 	});
 });
-// end
+//#endregion
 
-// Getting stuff prepared for ready
+//#region Getting stuff prepared for ready
 bot.once('ready', () => {
 	// first status set for `ready`
 	const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
@@ -69,8 +75,9 @@ bot.once('ready', () => {
 		// end
 	});
 });
+//#endregion
 
-// Things to do on guild join
+//#region Things to do on guild join
 bot.on('guildCreate', async joinedGuild => {
 	// activity set
 	const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
@@ -84,9 +91,9 @@ bot.on('guildCreate', async joinedGuild => {
 	console.log('Doc Created');
 	// end
 });
-// end
+//#endregion
 
-// Stuff to do on guild leave
+//#region Stuff to do on guild leave
 bot.on('guildDelete', async joinedGuild => {
 	// deletes server from db
 	const req = await GuildModel.findOne({ id: joinedGuild.id });
@@ -97,9 +104,9 @@ bot.on('guildDelete', async joinedGuild => {
 	console.log('Doc Removed');
 	// end
 });
-// end
+//#endregion
 
-// Custom prefixes
+//#region Custom Prefixes
 // bot.on('message', async msg => {
 // 	if(!msg.guild) return;
 // 	if(msg.author.bot) return;
@@ -124,33 +131,34 @@ bot.on('guildDelete', async joinedGuild => {
 // 	}
 	// end
 // });
-// end
+//#endregion
 
-// Final ready
+//#region Final ready
 bot.on('ready', async () => {
 	console.log(`${bot.user.username} is online!`);
-	if(TYPE == "TEST")
-		console.log("Default prefix is: <!")
-	else if(TYPE = "TEST2")
-		console.log("Default prefix is: <!!")
-	else if(TYPE = "PRODUCTION")
-		console.log("Default prefix is: <")
+	switch(TYPE) {
+		case "TEST1":
+			console.log("Default prefix is: <!")
+			break
+		case "TEST2":
+			console.log("Default prefix is: <!!")
+			break
+		case "PRODUCTION":
+			console.log("Default prefix is: <")
+			break
+		default:
+			console.log("The prefix cannot be determined, but its probably <")
+	}
 });
-// end
+//#endregion
 
-// Primary command identifier
+//#region Primary command identifier
 bot.on('message', async msg => {
-	const req = await GuildModel.findOne({ id: msg.guild.id });
-	if(TYPE == "TEST")
-		req.prefix = "<!"
-	else if(TYPE = "TEST2")
-		req.prefix = "<!!"
 
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
 
 	if (msg.content === '<prefix>') {
-
 		const req = await GuildModel.findOne({ id: msg.guild.id });
 		if (!req) return require('./util/errMsg').run(bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
 		const prefixembed = new Discord.MessageEmbed({
@@ -180,28 +188,41 @@ bot.on('message', async msg => {
 		return await msg.channel.send(setprefixembed);
 	}
 
+	const req = await GuildModel.findOne({ id: msg.guild.id });
+	if(TYPE == "TEST")
+		req.prefix = "<!"
+	else if(TYPE = "TEST2")
+		req.prefix = "<!!"
+
 	let args = '';
-	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {
+	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix))
 		args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);
+	else return;
+
+	// console.log(queue.map(_ => _.msg.author.username))
+	try {
+		await new Promise(resolve => queue.push(new queueMessage(msg, () => queue, qM => {queue.splice(queue.indexOf(qM), 1); resolve()})))
+	} catch (e) {
+		console.log(e) 
+		queue.push(new queueMessage(msg, () => queue, qM => queue.splice(queue.indexOf(qM), 1), true))
+		queueMessage.delete(msg)
+		await msg.react("❌")
+		return // Returns if they spam quite a bit
 	}
-	else{
-		return;
-	}
+
 	const cmd = args.shift().toLowerCase();
 	let command;
-	if(bot.commands.has(cmd)) {
+	if(bot.commands.has(cmd))
 		command = bot.commands.get(cmd);
-	}
-	else {
+	else
 		command = bot.commands.get(bot.aliases.get(cmd));
-	}
-	
+
 	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) command.run(bot, msg, args, config)
 	else if(!command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(", ") + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(" ")}${config.suff}\``);
 });
-// end
+//#endregion
 
-// Node Network
+//#region  Node Network
 bot.on('message', async msg => {
 
 	if(msg.author.bot) return;
@@ -229,7 +250,9 @@ bot.on('message', async msg => {
 	bot.guilds.cache.filter(g => g != msg.guild && g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.find(c => c.name == 'node-network').send(embed));
 	// end
 });
-// end
+//#endregion
+
+//#region determines which token you are using
 // test bot if not in production, defaualts to production -- Hamziniii 🎩
 if(process.env.PRODUCTION != undefined) {
 	if(process.env.PRODUCTION == "true") {
@@ -247,3 +270,4 @@ if(process.env.PRODUCTION != undefined) {
 	TYPE = "PRODUCTION"
 	bot.login(process.env.TOKEN)
 }
+//#endregion
