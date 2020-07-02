@@ -137,7 +137,7 @@ bot.on('guildDelete', async joinedGuild => {
 bot.on('ready', async () => {
 	console.log(`${bot.user.username} is online!`);
 	switch(TYPE) {
-		case "TEST1":
+		case "TEST":
 			console.log("Default prefix is: <!")
 			break
 		case "TEST2":
@@ -148,6 +148,7 @@ bot.on('ready', async () => {
 			break
 		default:
 			console.log("The prefix cannot be determined, but its probably <")
+			break
 	}
 });
 //#endregion
@@ -265,7 +266,7 @@ if(process.env.PRODUCTION != undefined) {
 		} else {
 			TYPE = "TEST"
 			bot.login(process.env.TESTTOKEN)
-	}
+		}
 } else {
 	TYPE = "PRODUCTION"
 	bot.login(process.env.TOKEN)
