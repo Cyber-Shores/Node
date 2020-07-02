@@ -99,7 +99,7 @@ module.exports.run = async (bot, msg, args) => {
 						},
 						{
 							name: 'Lead Artist:',
-							value: '```dom#9445```',
+							value: '```Kal9000#0867```',
 							inline: true,
 						},
 						{
