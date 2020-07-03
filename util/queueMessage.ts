@@ -38,7 +38,7 @@ export const run = class queueMessage {
     }
 
     getLifespan(count: number) {
-        return (10 / (1 + (10/.6) * Math.pow(Math.E, -.5 * count))) * 1000
+        return (10 / (1 + (10) * Math.pow(Math.E, -.5 * count))) * 1000
     }
 
     secs(ms: number) {
