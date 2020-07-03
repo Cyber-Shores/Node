@@ -2,7 +2,7 @@ const Discord = module.require('discord.js');
 const config = module.require('../../config.json');
 const UserModel = require('../../models/UserBio');
 module.exports.run = async (bot, msg, args) => {
-    
+    const m = await msg.channel.send('```Locating Data...```');
 	const req = await UserModel.findOne({ id: msg.author.id });
 	let nodata = new Discord.MessageEmbed({
 		title: 'Data Clear!',
@@ -16,8 +16,11 @@ module.exports.run = async (bot, msg, args) => {
 		});
 
 	if (!req) {
+		m.delete();
 		return msg.channel.send(nodata)
 	}else {
+		m.delete()
+		const m2 = await msg.channel.send('```Deleting Data...```');
 		let embed = new Discord.MessageEmbed({
 			title: 'Data Cleared!',
 			description: `All of ${msg.author.tag}'s data has been deleted!`,
@@ -29,11 +32,12 @@ module.exports.run = async (bot, msg, args) => {
 			color: (msg.member.displayHexColor),
 		});
 
-	await req.deleteOne({ id: msg.author.id, fuction(err) {
+		await req.deleteOne({ id: msg.author.id, fuction(err) {
 		
 		if(err) throw err;
 		}
 	});
+	m2.delete();
 	msg.channel.send(embed)
 	
 }
@@ -43,9 +47,9 @@ module.exports.run = async (bot, msg, args) => {
 
 module.exports.help = {
 	name: 'cleardata',
-	category: 'Misc.',
+	category: 'Tools',
 	reqPerms: [],
-	description: 'Clears all of your user data!',
+	description: 'Clears all of your user data that Node is storing.',
 	usage: `${config.pref}cleardata${config.suff}`,
 	aliases: [],
 };
