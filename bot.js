@@ -254,7 +254,6 @@ bot.on('message', async msg => {
 	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix))
 		args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);
 	else return;
-
 	// console.log(queue.map(_ => _.msg.author.username))
 	try {
 		await new Promise(resolve => queue.push(new queueMessage(msg, () => queue, qM => {queue.splice(queue.indexOf(qM), 1); resolve()})))

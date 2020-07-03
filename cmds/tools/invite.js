@@ -40,6 +40,7 @@ module.exports.run = async (bot, msg) => {
 				name: 'Join The Support Server!',
 				url: 'https://discord.gg/GUvk7Qu',
 			},
+			description: "https://discordbotlist.com/bots/node",
 			image: {
 				url: bot.user.displayAvatarURL(),
 			},
