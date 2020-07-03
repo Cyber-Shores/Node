@@ -27,7 +27,7 @@ exports.run = class queueMessage {
         console.log(this.instance().filter(_ => _.msg.author.username == this.msg.author.username).length);
     }
     getLifespan(count) {
-        return (10 / (1 + (10 / .6) * Math.pow(Math.E, -.5 * count))) * 1000;
+        return (10 / (1 + (10) * Math.pow(Math.E, -.5 * count))) * 1000;
     }
     secs(ms) {
         return (ms / 1000).toFixed(3);
