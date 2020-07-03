@@ -77,7 +77,7 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 	if(args[0] == 'bio') {
-		const strings = args.join(' ').split();
+		const strings = args.join(' ').substring(9);
 		const bioarray = (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
 
 		if(bioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
@@ -104,7 +104,7 @@ module.exports.run = async (bot, msg, args) => {
 	}
 	if(args[0] == 'server') {
 		if(args[1] == 'bio') {
-			const strings = args.join(' ').split();
+			const strings = args.join(' ').substring(16);
 			const serverbioarray = (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
 			if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg').run(bot, msg, false, 'You do not have proper premissions.');
 			if(serverbioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
@@ -261,7 +261,7 @@ module.exports.help = {
 	name: 'info',
 	category: 'Tools',
 	reqPerms: [],
-	description: 'Posts a list of information about either the message author, or a provided user.',
-	usage: `${config.pref}info${config.suff} || ${config.pref}info [user-mention]${config.suff} || ${config.pref}info server${config.suff} || ${config.pref}info server bio [Your server bio]${config.suff}`,
+	description: 'Posts a list of information about either the message author, a provided user, or the server. You can also set a bio for yourself or your server that will appear in the command',
+	usage: `${config.pref}info${config.suff} || ${config.pref}info [user-mention]${config.suff} || ${config.pref}info bio [bio]${config.suff} || ${config.pref}info server${config.suff} || ${config.pref}info server bio [bio]${config.suff}`,
 	aliases: [],
 };
