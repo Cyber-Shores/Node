@@ -1,9 +1,10 @@
 const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
 const { Menu } = module.require('discord.js-menu');
-const axios = require("axios")
+const axios = require('axios');
 
 module.exports.run = async (bot, msg, args) => {
+	// eslint-disable-next-line no-unused-vars
 	function calcDate(date1, date2) {
 		const diff = Math.floor(date1.getTime() - date2.getTime());
 		const day = 1000 * 60 * 60 * 24;
@@ -28,11 +29,10 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 
-	
 
 	const m = await msg.channel.send('```Generating menu...```');
 	// const info = (await (await fetch('https://api.github.com/repos/Cyber-Shores/Node/tags')).json())[0].name
-	const info = (await axios.get('https://api.github.com/repos/Cyber-Shores/Node/tags')).data[0].name
+	const info = (await axios.get('https://api.github.com/repos/Cyber-Shores/Node/tags')).data[0].name;
 	if (!args[0]) {
 		const embed = new MessageEmbed({
 			title: 'Help',
