@@ -1,3 +1,4 @@
+/* eslint-disable no-inline-comments */
 require('dotenv').config();
 const config = require('./config.json');
 const Discord = require('discord.js');
@@ -6,14 +7,16 @@ const bot = new Client();
 const fs = require('fs');
 const mongoose = require('mongoose');
 const GuildModel = require('./models/GuildData');
+// eslint-disable-next-line no-unused-vars
 const { maxHeaderSize } = require('http');
-const wait = require('./util/wait').run
-const queueMessage = require('./util/queueMessage.js').run
+// eslint-disable-next-line no-unused-vars
+const wait = require('./util/wait').run;
+const queueMessage = require('./util/queueMessage.js').run;
 const Canvas = require('canvas');
 
-let TYPE = "PRODUCTION" // either PRODUCTION, TEST, or TEST2
+let TYPE = 'PRODUCTION'; // either PRODUCTION, TEST, or TEST2
 
-var queue = [] // Queue of messages sent EVERYWHERE, it auto deletes after a time though
+const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
 // const dbl = new DBL('', bot);
@@ -21,7 +24,7 @@ var queue = [] // Queue of messages sent EVERYWHERE, it auto deletes after a tim
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
-//#region start of connecting to database
+// #region start of connecting to database
 // process.env.MONGOLINK used to hide password
 mongoose.connect(process.env.MONGOLINK, {
 	// mongo connect settings
@@ -30,9 +33,9 @@ mongoose.connect(process.env.MONGOLINK, {
 	useUnifiedTopology: true,
 	// end
 }).then(console.log('\nMongoDB connected!\n'));
-//#endregion end
+// #endregion end
 
-//#region start of command reading
+// #region start of command reading
 fs.readdir('./cmds/', (err, folders) => {
 	folders.forEach(item => {
 		fs.readdir(`./cmds/${item}`, (err, files) => {
@@ -58,9 +61,9 @@ fs.readdir('./cmds/', (err, folders) => {
 
 	});
 });
-//#endregion
+// #endregion
 
-//#region Getting stuff prepared for ready
+// #region Getting stuff prepared for ready
 bot.once('ready', () => {
 	// first status set for `ready`
 	const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
@@ -76,9 +79,9 @@ bot.once('ready', () => {
 		// end
 	});
 });
-//#endregion
+// #endregion
 
-//#region Canvas join message
+// #region Canvas join message
 const applyText = (canvas, text, size) => {
 	const ctx = canvas.getContext('2d');
 	let fontSize = size;
@@ -87,14 +90,14 @@ const applyText = (canvas, text, size) => {
 	} while (ctx.measureText(text).width > canvas.width - 300);
 
 	return ctx.font;
-}
-//#endregion
+};
+// #endregion
 
-//#region the canvas thigny
+// #region the canvas thigny
 bot.on('guildMemberAdd', async member => {
 	const channel = member.guild.systemChannel;
 	if(!channel) return;
-	const canvas = Canvas.createCanvas(700,250);
+	const canvas = Canvas.createCanvas(700, 250);
 	const ctx = canvas.getContext('2d');
 
 
@@ -104,8 +107,8 @@ bot.on('guildMemberAdd', async member => {
 	ctx.strokeStyle = '#74037b';
 	ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-	ctx.fillStyle = '#1c1c21'
-	ctx.fillRect((canvas.width / 2.5)-10, (canvas.height / 3.5)-35, canvas.width - (canvas.width / 2.5)-5, canvas.height - (canvas.height / 3.5) - 50)
+	ctx.fillStyle = '#1c1c21';
+	ctx.fillRect((canvas.width / 2.5) - 10, (canvas.height / 3.5) - 35, canvas.width - (canvas.width / 2.5) - 5, canvas.height - (canvas.height / 3.5) - 50);
 
 	ctx.font = applyText(canvas, `Welcome to ${member.guild.name},`, 38);
 	ctx.fillStyle = '#ffffff';
@@ -113,7 +116,7 @@ bot.on('guildMemberAdd', async member => {
 
 	ctx.font = applyText(canvas, member.displayName, 70);
 	ctx.fillStyle = '#ffffff';
-	ctx.fillText(member.displayName, canvas.width / 2.5, canvas.height / 1.8)
+	ctx.fillText(member.displayName, canvas.width / 2.5, canvas.height / 1.8);
 
 	// ctx.beginPath();
 	// ctx.arc(125, 125, 100, 0, Math.PI*2, true);
@@ -124,20 +127,21 @@ bot.on('guildMemberAdd', async member => {
 	ctx.drawImage(avatar, 25, 25, 200, 200);
 
 	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.jpg');
+	// eslint-disable-next-line no-unused-vars
 	const embed = new MessageEmbed({
 		title: `Welcome to ${member.guild.name}, ${member.user.username}`,
-        footer: {
-            "text": member.user.username,
-            "icon_url": member.user.displayAvatarURL()
+		footer: {
+			'text': member.user.username,
+			'icon_url': member.user.displayAvatarURL(),
 		},
-        timestamp: Date.now(),
+		timestamp: Date.now(),
 		color: 0x07592b,
 	});
 	channel.send(attachment);
 });
-//#endregion
+// #endregion
 
-//#region Things to do on guild join
+// #region Things to do on guild join
 bot.on('guildCreate', async joinedGuild => {
 	// activity set
 	const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
@@ -151,9 +155,9 @@ bot.on('guildCreate', async joinedGuild => {
 	console.log('Doc Created');
 	// end
 });
-//#endregion
+// #endregion
 
-//#region Stuff to do on guild leave
+// #region Stuff to do on guild leave
 bot.on('guildDelete', async joinedGuild => {
 	// deletes server from db
 	const req = await GuildModel.findOne({ id: joinedGuild.id });
@@ -164,9 +168,9 @@ bot.on('guildDelete', async joinedGuild => {
 	console.log('Doc Removed');
 	// end
 });
-//#endregion
+// #endregion
 
-//#region Custom Prefixes
+// #region Custom Prefixes
 // bot.on('message', async msg => {
 // 	if(!msg.guild) return;
 // 	if(msg.author.bot) return;
@@ -189,31 +193,31 @@ bot.on('guildDelete', async joinedGuild => {
 // 		return msg.channel.send(prefixembed);
 
 // 	}
-	// end
+// end
 // });
-//#endregion
+// #endregion
 
-//#region Final ready
+// #region Final ready
 bot.on('ready', async () => {
 	console.log(`${bot.user.username} is online!`);
 	switch(TYPE) {
-		case "TEST":
-			console.log("Default prefix is: <!")
-			break
-		case "TEST2":
-			console.log("Default prefix is: <!!")
-			break
-		case "PRODUCTION":
-			console.log("Default prefix is: <")
-			break
-		default:
-			console.log("The prefix cannot be determined, but its probably <")
-			break
+	case 'TEST':
+		console.log('Default prefix is: <!');
+		break;
+	case 'TEST2':
+		console.log('Default prefix is: <!!');
+		break;
+	case 'PRODUCTION':
+		console.log('Default prefix is: <');
+		break;
+	default:
+		console.log('The prefix cannot be determined, but its probably <');
+		break;
 	}
 });
-//#endregion
+// #endregion
 
-//#region Primary command identifier
+// #region Primary command identifier
 bot.on('message', async msg => {
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
@@ -232,12 +236,13 @@ bot.on('message', async msg => {
 			timestamp: Date.now(),
 		});
 		return msg.channel.send(prefixembed);
-	}else if(msg.content === '<prefix reset>') {
-		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: `>` } }, { new: true });
-		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: `<` } }, { new: true });
+	}
+	else if(msg.content === '<prefix reset>') {
+		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: '>' } }, { new: true });
+		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: '<' } }, { new: true });
 		const setprefixembed = await new MessageEmbed({
 			title: 'Prefix Reset!',
-			description: `Prefix: <\nSuffix: >\n`,
+			description: 'Prefix: <\nSuffix: >\n',
 			color: msg.member.displayHexColor,
 			footer: {
 				'text': msg.author.username,
@@ -249,40 +254,38 @@ bot.on('message', async msg => {
 	}
 
 	const req = await GuildModel.findOne({ id: msg.guild.id });
-	if(TYPE == "TEST")
-		req.prefix = "<!"
-	else if(TYPE = "TEST2")
-		req.prefix = "<!!"
+	if(TYPE == 'TEST') {req.prefix = '<!';}
+	else if(TYPE == 'TEST2') {req.prefix = '<!!';}
 
 	let args = '';
-	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix))
-		args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);
-	else return;
+	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);}
+	else {return;}
 
 	// console.log(queue.map(_ => _.msg.author.username))
 	try {
-		await new Promise(resolve => queue.push(new queueMessage(msg, () => queue, qM => {queue.splice(queue.indexOf(qM), 1); resolve()})))
-	} catch (e) {
-		console.log(e) 
-		queue.push(new queueMessage(msg, () => queue, qM => queue.splice(queue.indexOf(qM), 1), true))
-		queueMessage.delete(msg)
-		await msg.react("❌")
-		return // Returns if they spam quite a bit
+		// eslint-disable-next-line max-statements-per-line
+		await new Promise(resolve => queue.push(new queueMessage(msg, () => queue, qM => {queue.splice(queue.indexOf(qM), 1); resolve();})));
+	}
+	catch (e) {
+		console.log(e);
+		queue.push(new queueMessage(msg, () => queue, qM => queue.splice(queue.indexOf(qM), 1), true));
+		queueMessage.delete(msg);
+		await msg.react('❌');
+		return; // Returns if they spam quite a bit
 	}
 
 	const cmd = args.shift().toLowerCase();
 	let command;
-	if(bot.commands.has(cmd))
-		command = bot.commands.get(cmd);
-	else
-		command = bot.commands.get(bot.aliases.get(cmd));
+	if(bot.commands.has(cmd)) {command = bot.commands.get(cmd);}
+	else {command = bot.commands.get(bot.aliases.get(cmd));}
 
-	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) command.run(bot, msg, args, config)
-	else if(!command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(", ") + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(" ")}${config.suff}\``);
+	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) command.run(bot, msg, args, config);
+	// eslint-disable-next-line no-useless-escape
+	else if(!command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(', ') + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(' ')}${config.suff}\``);
 });
-//#endregion
+// #endregion
 
-//#region  Node Network
+// #region  Node Network
 bot.on('message', async msg => {
 
 	if(msg.author.bot) return;
@@ -310,24 +313,27 @@ bot.on('message', async msg => {
 	bot.guilds.cache.filter(g => g != msg.guild && g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.find(c => c.name == 'node-network').send(embed));
 	// end
 });
-//#endregion
+// #endregion
 
-//#region determines which token you are using
+// #region determines which token you are using
 // test bot if not in production, defaualts to production -- Hamziniii 🎩
 if(process.env.PRODUCTION != undefined) {
-	if(process.env.PRODUCTION == "true") {
-		TYPE = "PRODUCTION"
-		bot.login(process.env.TOKEN)
-	} else
-		if(process.env.TEST2TOKEN) {
-			TYPE = "TEST2"
-			bot.login(process.env.TEST2TOKEN)
-		} else {
-			TYPE = "TEST"
-			bot.login(process.env.TESTTOKEN)
-		}
-} else {
-	TYPE = "PRODUCTION"
-	bot.login(process.env.TOKEN)
+	if(process.env.PRODUCTION == 'true') {
+		TYPE = 'PRODUCTION';
+		bot.login(process.env.TOKEN);
+	}
+	else
+	if(process.env.TEST2TOKEN) {
+		TYPE = 'TEST2';
+		bot.login(process.env.TEST2TOKEN);
+	}
+	else {
+		TYPE = 'TEST';
+		bot.login(process.env.TESTTOKEN);
+	}
 }
-//#endregion
+else {
+	TYPE = 'PRODUCTION';
+	bot.login(process.env.TOKEN);
+}
+// #endregion
