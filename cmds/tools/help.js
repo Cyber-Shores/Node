@@ -6,7 +6,8 @@ const info = getRepoInfo();
 
 
 module.exports.run = async (bot, msg, args) => {
-	console.log(info)
+	console.log(info);
+	// eslint-disable-next-line no-unused-vars
 	function calcDate(date1, date2) {
 		const diff = Math.floor(date1.getTime() - date2.getTime());
 		const day = 1000 * 60 * 60 * 24;
@@ -31,7 +32,6 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 
-	
 
 	const m = await msg.channel.send('```Generating menu...```');
 	if (!args[0]) {
