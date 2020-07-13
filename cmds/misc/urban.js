@@ -5,7 +5,9 @@ const config = module.require('../../config.json');
 const { Menu } = module.require('discord.js-menu');
 
 module.exports.run = async (bot, msg, args) => {
+	if(!msg.channel.nsfw) return require('../../util/errMsg.js').run(bot, msg, true, 'You can\'t use this in a SFW channel.');
 	if(!args[0]) return require('../../util/errMsg.js').run(bot, msg, true, 'Please provide a term to search');
+
 	// msg.channel.send("```⚠️ Please provide a term to search```");
 	if(args[0] == 'random') {
 		urban.random().first(json => {
@@ -14,7 +16,7 @@ module.exports.run = async (bot, msg, args) => {
 				.setDescription(json.definition || '```⚠️ Definition Not Found```')
 				.addField('Upvotes', json.thumbs_up || 'NaN', true)
 				.addField('Downvotes', json.thumbs_down || 'NaN', true)
-				.setFooter(`Written by ${json.author}`);
+				.setFooter(`Definition written by ${json.author}`);
 			msg.channel.send(embed);
 		});
 	}
@@ -28,7 +30,7 @@ module.exports.run = async (bot, msg, args) => {
 				.setDescription(json.definition || '```⚠️ Definition Not Found```')
 				.addField('Upvotes', json.thumbs_up || 'NaN', true)
 				.addField('Downvotes', json.thumbs_down || 'NaN', true)
-				.setFooter(`Written by ${json.author}`);
+				.setFooter(`Definition written by ${json.author}`);
 			msg.channel.send(embed);
 			// new Menu(msg.channel, msg.author.id, [
 			// 	{
