@@ -5,7 +5,8 @@ const request = module.require('request');
 module.exports.run = async (bot, msg, args) => {
 	if(!args[0]) return require('../../util/errMsg.js').run(bot, msg, true, 'Please provide a search term.');
 	const options = {
-		url: encodeURI('http://results.dogpile.com/serp?qc=images&q=' + args.join(" ")), //+ args.join('%20'),
+		// eslint-disable-next-line no-inline-comments
+		url: encodeURI('http://results.dogpile.com/serp?qc=images&q=' + args.join(' ')), // + args.join('%20'),
 		method: 'GET',
 		headers: {
 			'Accept':  'text/html',
@@ -18,11 +19,12 @@ module.exports.run = async (bot, msg, args) => {
 		const links = $('.image a.link');
 		const urls = new Array(links.length).fill(0).map((v, i) => links.eq(i).attr('href'));
 		if(!urls.length) return require('../../util/errMsg.js').run(bot, msg, false, `No results for "${args.join(' ')}"`);
+		const url = urls[Math.floor(Math.random() * urls.length)];
 		msg.channel.send(new MessageEmbed({
 			title: args.join(' '),
-			url: urls[Math.floor(Math.random() * urls.length)],
+			url: url,
 			image: {
-				url: urls[Math.floor(Math.random() * urls.length)],
+				url: url,
 			},
 			color: msg.member.displayHexColor,
 			timestamp: new Date(),
