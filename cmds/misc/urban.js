@@ -7,7 +7,7 @@ const config = module.require('../../config.json');
 const { Menu } = module.require('discord.js-menu');
 module.exports.run = async (bot, msg, args) => {
     if (!msg.channel.nsfw)
-        return require('../../util/errMsg.js').run(bot, msg, true, `You can\'t use this in a SFW channel. Use this in a NSFW channel like: ${msg.guild.channels.cache.array().filter(c => c.type == "text").filter((c) => c.nsfw).map(c => c.name).join(" ")}`);
+        return require('../../util/errMsg.js').run(bot, msg, true, `You can\'t use this in a SFW channel. Use this in a NSFW channel like: ${msg.guild.channels.cache.array().filter(c => c.type == "text").filter((c) => c.nsfw).map(c => c.name).join(", ")}`);
     if (!args[0])
         return require('../../util/errMsg.js').run(bot, msg, true, 'Please provide a term to search');
     // msg.channel.send("```⚠️ Please provide a term to search```");
