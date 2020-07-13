@@ -124,6 +124,10 @@ module.exports.run = async (bot, msg, args) => {
 	}
 	else{
 		let hasPerms = true;
+		if(!bot.commands.get(args[0])) {
+			m.delete();
+			return require('../../util/errMsg.js').run(bot, msg, false, `"${args[0]}" is not a command\nUse ${config.pref}help${config.suff} to get a list of commands.`);
+		}
 		bot.commands.get(args[0]).help.reqPerms.forEach(perm => {
 			if(!msg.member.permissions.has(perm)) hasPerms = false;
 		});
