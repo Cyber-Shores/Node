@@ -10,10 +10,18 @@ class BotMessage {
             ...embed
         });
     }
+    /**
+     * Sends the message
+     * @returns returns the message (Message)
+     */
     async send() {
         return this.sent = await this.msg.channel.send(this.embed);
     }
-    /** Remove previous data, adds new data */
+    /**
+     * Remove previous data, adds new data
+     * @param embed Embed to be replaced to
+     * @returns the sent message (Message)
+     */
     async edit(embed) {
         if (!this.sent) {
             console.error("cannot edit a message that has not been sent. currently sending the message and then editing it");
@@ -26,7 +34,11 @@ class BotMessage {
         this.sent = await this.sent.edit(this.embed);
         return this.sent;
     }
-    /** Keeps old data, adds new data */
+    /**
+     * Keeps old data, adds new data
+     * @param embed Embed to be appended
+     * @returns the sent message (Message)
+     */
     async update(embed) {
         if (!this.sent) {
             console.error("cannot update a message that has not been sent. currently sending the message and then editing it");
@@ -40,6 +52,12 @@ class BotMessage {
         this.sent = await this.sent.edit(this.embed);
         return this.sent;
     }
+    /**
+     * Changes the embed to error state
+     * @param msg Message that was being responded to
+     * @param timeout How much time before the message gets deleted
+     * @param del Delete the error itself
+     */
     async error(msg, timeout = 20000, del = true) {
         this.embed.setColor("#ff0000");
         await this.send();
@@ -47,7 +65,14 @@ class BotMessage {
             this.sent.delete({ timeout });
         msg?.delete({ timeout });
     }
-    static wrap(text, length = 50, padding = 0, paddingStart) {
+    /**
+     * Basically formats a message with text wrapping
+     * @param text The text to be wrapped
+     * @param length The max length (usually 85/items per row)
+     * @param padding White space
+     * @param paddingStart add whitespace to the first line
+     */
+    static wrap(text, length = 85, padding = 0, paddingStart) {
         let l = paddingStart ? padding : 0;
         let t = paddingStart ? " ".repeat(padding) : "";
         for (let word of text.split(" "))
@@ -70,6 +95,10 @@ class BotMessage {
     }
 }
 exports.BotMessage = BotMessage;
+/**
+ * A basic template for an embed
+ * @param msg Message to respond to
+ */
 exports.defaultEmbed = (msg) => ({
     color: msg.member.displayHexColor,
     // author: {
