@@ -5,7 +5,7 @@ const request = module.require('request');
 module.exports.run = async (bot, msg, args) => {
 	if(!args[0]) return require('../../util/errMsg.js').run(bot, msg, true, 'Please provide a search term.');
 	const options = {
-		url: 'http://results.dogpile.com/serp?qc=images&q=' + args.join('%20'),
+		url: encodeURI('http://results.dogpile.com/serp?qc=images&q=' + args.join(" ")), //+ args.join('%20'),
 		method: 'GET',
 		headers: {
 			'Accept':  'text/html',
