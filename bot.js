@@ -223,6 +223,7 @@ bot.on('message', async msg => {
 		return msg.channel.send(prefixembed);
 	}
 	else if(msg.content === '<prefix reset>') {
+		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('./util/errMsg.js').run(bot, msg, false, 'You do not have proper perms');
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: '>' } }, { new: true });
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: '<' } }, { new: true });
 		const setprefixembed = await new MessageEmbed({
@@ -265,8 +266,9 @@ bot.on('message', async msg => {
 	let command;
 	if(bot.commands.has(cmd)) {command = bot.commands.get(cmd);}
 	else {command = bot.commands.get(bot.aliases.get(cmd));}
-	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) command.run(bot, msg, args, config);
+	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm) && msg.member.hasPermission(perm))) command.run(bot, msg, args, config);
 	// eslint-disable-next-line no-useless-escape
+	else if(!command.help.reqPerms.every(perm => msg.member.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'You do not have the following permissions: ' + `\`${command.help.reqPerms.join(' ')}`);
 	else if(!command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(', ') + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(' ')}${config.suff}\``);
 });
 // #endregion
