@@ -262,7 +262,6 @@ bot.on('message', async msg => {
 	}
 
 	const cmd = args.shift().toLowerCase();
-	console.log(cmd, args)
 
 	let command;
 	if(bot.commands.has(cmd)) {command = bot.commands.get(cmd);}
@@ -314,8 +313,7 @@ if(process.env.PRODUCTION == "false") {
 		console.log(process.env.BOT + " is not set in your .env file")
 }
 else {
-	// TYPE = 'PRODUCTION';
 	console.log('production')
-	// bot.login(process.env.TOKEN);
+	bot.login(process.env.TOKEN);
 }
 // #endregion
