@@ -1,3 +1,6 @@
+# just run `npm install` if package.json gets changed
+node_modules
+
 # Secrets
 .env
 
