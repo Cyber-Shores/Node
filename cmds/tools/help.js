@@ -104,7 +104,7 @@ module.exports.run = async (bot, msg, args) => {
 						},
 						{
 							name: 'Node Version:',
-							value: `**${info}**`,
+							value: `**[${info}](https://github.com/Cyber-Shores/Node/releases "releases")**`,
 							inline: true,
 						},
 						// {
