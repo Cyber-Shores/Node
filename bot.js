@@ -12,7 +12,7 @@ const { maxHeaderSize } = require('http');
 // eslint-disable-next-line no-unused-vars
 const wait = require('./util/wait').run;
 const queueMessage = require('./util/queueMessage.js').run;
-const Canvas = require('canvas');
+// const Canvas = require('canvas');
 
 const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
@@ -79,65 +79,65 @@ bot.once('ready', () => {
 });
 // #endregion
 
-// #region Canvas join message
-const applyText = (canvas, text, size) => {
-	const ctx = canvas.getContext('2d');
-	let fontSize = size;
-	do {
-		ctx.font = `${fontSize -= 10}px sans-serif`;
-	} while (ctx.measureText(text).width > canvas.width - 300);
+// // #region Canvas join message
+// const applyText = (canvas, text, size) => {
+// 	const ctx = canvas.getContext('2d');
+// 	let fontSize = size;
+// 	do {
+// 		ctx.font = `${fontSize -= 10}px sans-serif`;
+// 	} while (ctx.measureText(text).width > canvas.width - 300);
 
-	return ctx.font;
-};
-// #endregion
+// 	return ctx.font;
+// };
+// // #endregion
 
-// #region the canvas thigny
-bot.on('guildMemberAdd', async member => {
-	const channel = member.guild.systemChannel;
-	if(!channel) return;
-	const canvas = Canvas.createCanvas(700, 250);
-	const ctx = canvas.getContext('2d');
+// // #region the canvas thigny
+// bot.on('guildMemberAdd', async member => {
+// 	const channel = member.guild.systemChannel;
+// 	if(!channel) return;
+// 	const canvas = Canvas.createCanvas(700, 250);
+// 	const ctx = canvas.getContext('2d');
 
 
-	const background = await Canvas.loadImage('./docs/images/tech-banner.jpg');
-	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+// 	const background = await Canvas.loadImage('./docs/images/tech-banner.jpg');
+// 	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-	ctx.strokeStyle = '#74037b';
-	ctx.strokeRect(0, 0, canvas.width, canvas.height);
+// 	ctx.strokeStyle = '#74037b';
+// 	ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-	ctx.fillStyle = '#1c1c21';
-	ctx.fillRect((canvas.width / 2.5) - 10, (canvas.height / 3.5) - 35, canvas.width - (canvas.width / 2.5) - 5, canvas.height - (canvas.height / 3.5) - 50);
+// 	ctx.fillStyle = '#1c1c21';
+// 	ctx.fillRect((canvas.width / 2.5) - 10, (canvas.height / 3.5) - 35, canvas.width - (canvas.width / 2.5) - 5, canvas.height - (canvas.height / 3.5) - 50);
 
-	ctx.font = applyText(canvas, `Welcome to ${member.guild.name},`, 38);
-	ctx.fillStyle = '#ffffff';
-	ctx.fillText(`Welcome to ${member.guild.name},`, canvas.width / 2.5, canvas.height / 3.5);
+// 	ctx.font = applyText(canvas, `Welcome to ${member.guild.name},`, 38);
+// 	ctx.fillStyle = '#ffffff';
+// 	ctx.fillText(`Welcome to ${member.guild.name},`, canvas.width / 2.5, canvas.height / 3.5);
 
-	ctx.font = applyText(canvas, member.displayName, 70);
-	ctx.fillStyle = '#ffffff';
-	ctx.fillText(member.displayName, canvas.width / 2.5, canvas.height / 1.8);
+// 	ctx.font = applyText(canvas, member.displayName, 70);
+// 	ctx.fillStyle = '#ffffff';
+// 	ctx.fillText(member.displayName, canvas.width / 2.5, canvas.height / 1.8);
 
-	// ctx.beginPath();
-	// ctx.arc(125, 125, 100, 0, Math.PI*2, true);
-	// ctx.closePath();
-	// ctx.clip();
+// 	// ctx.beginPath();
+// 	// ctx.arc(125, 125, 100, 0, Math.PI*2, true);
+// 	// ctx.closePath();
+// 	// ctx.clip();
 
-	const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
-	ctx.drawImage(avatar, 25, 25, 200, 200);
+// 	const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
+// 	ctx.drawImage(avatar, 25, 25, 200, 200);
 
-	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.jpg');
-	// eslint-disable-next-line no-unused-vars
-	const embed = new MessageEmbed({
-		title: `Welcome to ${member.guild.name}, ${member.user.username}`,
-		footer: {
-			'text': member.user.username,
-			'icon_url': member.user.displayAvatarURL(),
-		},
-		timestamp: Date.now(),
-		color: 0x07592b,
-	});
-	channel.send(attachment);
-});
-// #endregion
+// 	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.jpg');
+// 	// eslint-disable-next-line no-unused-vars
+// 	const embed = new MessageEmbed({
+// 		title: `Welcome to ${member.guild.name}, ${member.user.username}`,
+// 		footer: {
+// 			'text': member.user.username,
+// 			'icon_url': member.user.displayAvatarURL(),
+// 		},
+// 		timestamp: Date.now(),
+// 		color: 0x07592b,
+// 	});
+// 	channel.send(attachment);
+// });
+// // #endregion
 
 // #region Things to do on guild join
 bot.on('guildCreate', async joinedGuild => {
