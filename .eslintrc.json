@@ -96,5 +96,9 @@
         "space-unary-ops": "error",
         "spaced-comment": "error",
         "yoda": "error"
-    }
+    },
+    "eslint.validate": [
+        "javascript",
+        "typescript"
+    ]
 }
