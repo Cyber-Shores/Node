@@ -241,7 +241,6 @@ bot.on('message', async msg => {
 	const req = await GuildModel.findOne({ id: msg.guild.id });
 	if(!!process.env.PREFIX) {req.prefix = process.env.PREFIX;}
 	if(!!process.env.SUFFIX) {req.suffix = process.env.SUFFIX;}
-	console.log(req.suffix, req.prefix)
 	let args = '';
 
 	// if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);}
