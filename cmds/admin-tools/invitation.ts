@@ -26,6 +26,6 @@ export const help = {
 	category: 'Admin Tools',
 	reqPerms: [],
 	description: 'Generates an invite link with perms',
-	usage: `${pref}invite [permission1] [...]${suff}`,
+	usage: `${pref}invitation [permission1] [...]${suff}`,
 	aliases: [],
 }
