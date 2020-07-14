@@ -14,8 +14,6 @@ const wait = require('./util/wait').run;
 const queueMessage = require('./util/queueMessage.js').run;
 const Canvas = require('canvas');
 
-let TYPE = 'PRODUCTION'; // either PRODUCTION, TEST, or TEST2
-
 const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
@@ -200,20 +198,7 @@ bot.on('guildDelete', async joinedGuild => {
 // #region Final ready
 bot.on('ready', async () => {
 	console.log(`${bot.user.username} is online!`);
-	switch(TYPE) {
-	case 'TEST':
-		console.log('Default prefix is: <!');
-		break;
-	case 'TEST2':
-		console.log('Default prefix is: <!!');
-		break;
-	case 'PRODUCTION':
-		console.log('Default prefix is: <');
-		break;
-	default:
-		console.log('The prefix cannot be determined, but its probably <');
-		break;
-	}
+	console.log(`Prefix hardcoded as ${process.env.PREFIX || "default"}, Suffex hardcoded as ${process.env.SUFFIX || "defualt"}`)
 });
 // #endregion
 
@@ -254,11 +239,13 @@ bot.on('message', async msg => {
 	}
 
 	const req = await GuildModel.findOne({ id: msg.guild.id });
-	if(TYPE == 'TEST') {req.prefix = '<!';}
-	else if(TYPE == 'TEST2') {req.prefix = '<!!';}
-
+	if(!!process.env.PREFIX) {req.prefix = process.env.PREFIX;}
+	if(!!process.env.SUFFIX) {req.suffix = process.env.SUFFIX;}
+	console.log(req.suffix, req.prefix)
 	let args = '';
-	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);}
+
+	// if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);}
+	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.match(new RegExp(`(?<=${req.prefix}).+?(?=${req.suffix})`))[0].trim().split(/ +/g)}
 	else {return;}
 
 	// console.log(queue.map(_ => _.msg.author.username))
@@ -275,10 +262,11 @@ bot.on('message', async msg => {
 	}
 
 	const cmd = args.shift().toLowerCase();
+	console.log(cmd, args)
+
 	let command;
 	if(bot.commands.has(cmd)) {command = bot.commands.get(cmd);}
 	else {command = bot.commands.get(bot.aliases.get(cmd));}
-
 	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) command.run(bot, msg, args, config);
 	// eslint-disable-next-line no-useless-escape
 	else if(!command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(', ') + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(' ')}${config.suff}\``);
@@ -317,23 +305,17 @@ bot.on('message', async msg => {
 
 // #region determines which token you are using
 // test bot if not in production, defaualts to production -- Hamziniii 🎩
-if(process.env.PRODUCTION != undefined) {
-	if(process.env.PRODUCTION == 'true') {
-		TYPE = 'PRODUCTION';
-		bot.login(process.env.TOKEN);
-	}
+if(process.env.PRODUCTION == "false") {
+	if(!process.env.BOT)
+		console.log("Please set BOT equal to TESTTOKEN, TEST2TOKEN, or TEST3TOKEN in your env file")
+	else if(!!process.env[process.env.BOT])
+		bot.login(process.env[process.env.BOT])
 	else
-	if(process.env.TEST2TOKEN) {
-		TYPE = 'TEST2';
-		bot.login(process.env.TEST2TOKEN);
-	}
-	else {
-		TYPE = 'TEST';
-		bot.login(process.env.TESTTOKEN);
-	}
+		console.log(process.env.BOT + " is not set in your .env file")
 }
 else {
-	TYPE = 'PRODUCTION';
-	bot.login(process.env.TOKEN);
+	// TYPE = 'PRODUCTION';
+	console.log('production')
+	// bot.login(process.env.TOKEN);
 }
 // #endregion
