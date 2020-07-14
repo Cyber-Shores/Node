@@ -20,6 +20,6 @@ exports.help = {
 	category: 'Admin Tools',
 	reqPerms: [],
 	description: 'Generates an invite link with perms',
-	usage: `${config_json_1.pref}invite [permission1] [...]${config_json_1.suff}`,
+	usage: `${config_json_1.pref}invitation [permission1] [...]${config_json_1.suff}`,
 	aliases: [],
 };
