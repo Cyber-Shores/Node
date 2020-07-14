@@ -47,7 +47,7 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
 	name: 'prefix',
 	category: 'Tools',
-	reqPerms: ["ADMINISTRATOR"],
+	reqPerms: [],
 	description: 'View or set the custom prefix/suffix for this server',
 	usage: `${config.pref}prefix${config.suff} || ${config.pref}prefix set [prefix] [suffix]${config.suff} || ${config.pref}prefix reset${config.suff}`,
 	aliases: ['suffix'],
