@@ -77,8 +77,12 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 	if(args[0] == 'bio') {
+		/* This is the problem child, idk what this was supposed to acheive
 		const strings = args.join(' ').substring(9);
 		const bioarray = (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
+		*/ 
+
+		bioarray = args.filter((_, i) => i != 0).join(" ")
 
 		if(bioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
 		const req = await Bio.findOne({ id: msg.author.id });
