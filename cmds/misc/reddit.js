@@ -5,13 +5,15 @@ const sf = require('snekfetch');
 module.exports.run = async (bot, msg, args) => {
 	if(!args[0]) return msg.channel.send('Please provide a subreddit name');
 	const m = await msg.channel.send('```Generating image...```');
-
-	sf.get(`https://www.reddit.com/r/${args[0]}/random.json?limit=1`).then(res => {
+	console.log("potato")
+	sf.get(`https://www.reddit.com/r/${args[0]}/random.json?limit=2`).then(res => {
+		console.log("potaot", res.body)
 		if(!res.body) {
 			m.delete();
 			return msg.channel.send('No Post could be found!');
 		}
-		const url = res.body[0].data.children[0].data.url;
+		res.body = res.body instanceof Array ? res.body : [res.body]
+		const url = res.body[0]?.data.children[0]?.data.url;
 		// console.log(res.body[0].data.children[0].data.over_18)
 		// console.log(msg.channel.nsfw)
 
