@@ -77,8 +77,8 @@ module.exports.run = async (bot, msg, args) => {
 		return message;
 	}
 	if(args[0] == 'bio') {
-		const strings = args.join(' ').substring(9);
-		const bioarray = (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
+		// const strings = args.join(' ').substring(9);
+		const bioarray = args.filter((_, i) => i > 0).join(" ") // (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
 
 		if(bioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
 		const req = await Bio.findOne({ id: msg.author.id });
@@ -104,8 +104,8 @@ module.exports.run = async (bot, msg, args) => {
 	}
 	if(args[0] == 'server') {
 		if(args[1] == 'bio') {
-			const strings = args.join(' ').substring(16);
-			const serverbioarray = (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
+			// const strings = args.join(' ').substring(16);
+			const serverbioarray = args.filter((_, i) => i > 1).join(" ") // (strings.map(function(f) { return f.substring(f.indexOf(' ') + 1);}).join(' '));
 			if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg').run(bot, msg, false, 'You do not have proper premissions.');
 			if(serverbioarray.length > 150) return require('../../util/errMsg').run(bot, msg, true, 'Server bio can not be longer than 150 characters');
 			const req = await GuildModel.findOne({ id: msg.guild.id });
