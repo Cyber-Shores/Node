@@ -10,7 +10,7 @@ module.exports.run = async (bot, msg) => {
 
 		return `${mm}/${dd}/${yyyy}`;
 	}
-	if(!msg.member.hasPermission('ADMINISTRATOR')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper perms');
+	if(!msg.member.hasPermission('MANAGE_CHANNELS')) return require('../../util/errMsg.js').run(bot, msg, false, 'You do not have proper perms');
 	let channel = msg.guild.channels.cache.find(c => c.name == 'node-network');
 	if(!channel) {
 		try {
@@ -58,7 +58,7 @@ module.exports.run = async (bot, msg) => {
 module.exports.help = {
 	name: 'network',
 	category: 'Admin Tools',
-	reqPerms: ['ADMINISTRATOR'],
+	reqPerms: ['MANAGE_CHANNELS'],
 	description: 'Creates a NodeNetwork channel where you can talk to fellow Node using servers across Discord!',
 	usage: `${config.pref}network${config.suff}`,
 	aliases: ['nodeNetwork', 'startNetwork', 'startNet', 'net', 'nodeNet'],
