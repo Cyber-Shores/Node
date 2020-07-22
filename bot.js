@@ -299,7 +299,7 @@ bot.on('message', async msg => {
 	// end
 
 	// sending
-	bot.guilds.cache.filter(g => g != msg.guild && g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.find(c => c.name == 'node-network').send(embed));
+	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach(c => c.send(embed)));
 	// end
 });
 
