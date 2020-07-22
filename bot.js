@@ -279,7 +279,7 @@ bot.on('message', async msg => {
 
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
-	if(msg.channel.name != 'node-network') return;
+	if(!msg.channel.name.startsWith("node-")) return;
 
 	// creates new node network message
 	const embed = new MessageEmbed({
@@ -296,11 +296,13 @@ bot.on('message', async msg => {
 	});
 	const attachment = msg.attachments.first();
 	if(attachment) embed.setImage(attachment.url);
-	// end
 
-	// sending
-	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach(c => c.send(embed)));
-	// end
+	if(msg.channel.name == "node-network") {
+		bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach(c => c.send(embed)));
+	} else {
+		bot.channels.cache.filter(c => c.name == msg.channel.name && c.topic == msg.channel.topic && c != msg.channel).array().forEach(c => c.send(embed));
+	}
+
 });
 
 bot.on('channelCreate', async channel => {
@@ -326,7 +328,7 @@ bot.on('channelCreate', async channel => {
 					color: 0x07592b,
 					fields: [
 						{
-							name: `Number of servers in connected to the Node Network as of ${getDate()}:`,
+							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
 							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
 						},
 					],
@@ -364,7 +366,7 @@ bot.on('channelDelete', async channel => {
 					color: 0x07592b,
 					fields: [
 						{
-							name: `Number of servers in connected to the Node Network as of ${getDate()}:`,
+							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
 							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
 						},
 					],
