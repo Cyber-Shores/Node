@@ -302,6 +302,84 @@ bot.on('message', async msg => {
 	bot.guilds.cache.filter(g => g != msg.guild && g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.find(c => c.name == 'node-network').send(embed));
 	// end
 });
+
+bot.on('channelCreate', async channel => {
+	if(channel.type != "text") return;
+	if(channel.name != "node-network") return;
+	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 1) return;
+	function getDate() {
+		const today = new Date();
+		const dd = String(today.getDate()).padStart(2, '0');
+		const mm = String(today.getMonth() + 1).padStart(2, '0');
+		const yyyy = today.getFullYear();
+
+		return `${mm}/${dd}/${yyyy}`;
+	}
+	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+		try {
+			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
+			let message = await pinned.first();
+			if(message.author.id == bot.user.id) {
+				const updatedEmbed = new Discord.MessageEmbed({
+					title: `Welcome to the Node Network, ${g.name}.`,
+					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
+					color: 0x07592b,
+					fields: [
+						{
+							name: `Number of servers in connected to the Node Network as of ${getDate()}:`,
+							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+						},
+					],
+				})
+				message.edit(updatedEmbed);
+				if(g.channels.cache.find(c => c.name == 'node-network')) g.channels.cache.find(c => c.name == 'node-network').topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+			}
+		} catch(e) {
+			console.log(e.stack);
+		}
+
+	});
+});
+
+bot.on('channelDelete', async channel => {
+	if(channel.type != "text") return;
+	if(channel.name != "node-network") return;
+	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 0) return;
+	function getDate() {
+		const today = new Date();
+		const dd = String(today.getDate()).padStart(2, '0');
+		const mm = String(today.getMonth() + 1).padStart(2, '0');
+		const yyyy = today.getFullYear();
+
+		return `${mm}/${dd}/${yyyy}`;
+	}
+	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+		try {
+			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
+			let message = await pinned.first();
+			if(message.author.id == bot.user.id) {
+				const updatedEmbed = new Discord.MessageEmbed({
+					title: `Welcome to the Node Network, ${g.name}.`,
+					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
+					color: 0x07592b,
+					fields: [
+						{
+							name: `Number of servers in connected to the Node Network as of ${getDate()}:`,
+							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+						},
+					],
+				})
+				message.edit(updatedEmbed);
+				if(g.channels.cache.find(c => c.name == 'node-network')) g.channels.cache.find(c => c.name == 'node-network').topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+			}
+		} catch(e) {
+			console.log(e.stack);
+		}
+
+	});
+});
+
+
 // #endregion
 
 // #region determines which token you are using
