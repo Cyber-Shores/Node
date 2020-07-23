@@ -342,7 +342,7 @@ bot.on('channelCreate', async channel => {
 
 	});
 });
-
+ 
 bot.on('channelDelete', async channel => {
 	if(channel.type != "text") return;
 	if(channel.name != "node-network") return;
