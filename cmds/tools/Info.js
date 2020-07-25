@@ -5,7 +5,7 @@ const { MessageEmbed } = module.require('discord.js');
 const config = module.require('../../config.json');
 
 module.exports.run = async (bot, msg, args) => {
-	let user = msg.mentions.members.first();
+	let user = msg.mentions.members.first() || (!args[0] ? null : (await msg.guild.members.fetch({query: args[0], limit: 1})).array()[0]) || msg.member;
 
 	function calcActivity() {
 		const presenceArr = [];
@@ -262,6 +262,6 @@ module.exports.help = {
 	category: 'Tools',
 	reqPerms: [],
 	description: 'Posts a list of information about either the message author, a provided user, or the server. You can also set a bio for yourself or your server that will appear in the command',
-	usage: `${config.pref}info${config.suff} || ${config.pref}info [user-mention]${config.suff} || ${config.pref}info bio [bio]${config.suff} || ${config.pref}info server${config.suff} || ${config.pref}info server bio [bio]${config.suff}`,
+	usage: `${config.pref}info${config.suff} || ${config.pref}info [user-mention]${config.suff} || ${config.pref}info [username]${config.suff} || ${config.pref}info [nickname]${config.suff} || ${config.pref}info bio [bio]${config.suff} || ${config.pref}info server${config.suff} || ${config.pref}info server bio [bio]${config.suff}`,
 	aliases: [],
 };
