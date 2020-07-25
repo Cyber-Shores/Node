@@ -9,7 +9,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "mon": "nodemon bot.js",
-    "ts": "tsc && node bot.js"
+    "ts": "npx tsc && node bot.js"
+  },
+  "engines": {
+    "node": "14.x"
   },
   "author": "Cyber Shores",
   "license": "MIT",
@@ -27,6 +30,7 @@
     "random-puppy": "^1.1.0",
     "request": "^2.88.2",
     "snekfetch": "^4.0.4",
+    "typescript": "^3.9.6",
     "urban": "^0.3.2"
   }
 }

@@ -14,8 +14,6 @@ const wait = require('./util/wait').run;
 const queueMessage = require('./util/queueMessage.js').run;
 const Canvas = require('canvas');
 
-let TYPE = 'PRODUCTION'; // either PRODUCTION, TEST, or TEST2
-
 const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
 // const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
@@ -200,20 +198,7 @@ bot.on('guildDelete', async joinedGuild => {
 // #region Final ready
 bot.on('ready', async () => {
 	console.log(`${bot.user.username} is online!`);
-	switch(TYPE) {
-	case 'TEST':
-		console.log('Default prefix is: <!');
-		break;
-	case 'TEST2':
-		console.log('Default prefix is: <!!');
-		break;
-	case 'PRODUCTION':
-		console.log('Default prefix is: <');
-		break;
-	default:
-		console.log('The prefix cannot be determined, but its probably <');
-		break;
-	}
+	console.log(`Prefix hardcoded as ${process.env.PREFIX || "default"}, Suffex hardcoded as ${process.env.SUFFIX || "defualt"}`)
 });
 // #endregion
 
@@ -238,6 +223,7 @@ bot.on('message', async msg => {
 		return msg.channel.send(prefixembed);
 	}
 	else if(msg.content === '<prefix reset>') {
+		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('./util/errMsg.js').run(bot, msg, false, 'You do not have proper perms');
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: '>' } }, { new: true });
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: '<' } }, { new: true });
 		const setprefixembed = await new MessageEmbed({
@@ -254,11 +240,12 @@ bot.on('message', async msg => {
 	}
 
 	const req = await GuildModel.findOne({ id: msg.guild.id });
-	if(TYPE == 'TEST') {req.prefix = '<!';}
-	else if(TYPE == 'TEST2') {req.prefix = '<!!';}
-
+	if(!!process.env.PREFIX) {req.prefix = process.env.PREFIX;}
+	if(!!process.env.SUFFIX) {req.suffix = process.env.SUFFIX;}
 	let args = '';
-	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);}
+
+	// if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);}
+	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.match(new RegExp(`(?<=${req.prefix}).+?(?=${req.suffix})`))[0].trim().split(/ +/g)}
 	else {return;}
 
 	// console.log(queue.map(_ => _.msg.author.username))
@@ -275,13 +262,15 @@ bot.on('message', async msg => {
 	}
 
 	const cmd = args.shift().toLowerCase();
+
 	let command;
 	if(bot.commands.has(cmd)) {command = bot.commands.get(cmd);}
 	else {command = bot.commands.get(bot.aliases.get(cmd));}
-
-	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) command.run(bot, msg, args, config);
+	console.log(command)
+	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm) && (msg.member.hasPermission(perm) || command.help.name == "help"))) command.run(bot, msg, args, config);
 	// eslint-disable-next-line no-useless-escape
-	else if(!command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(', ') + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(' ')}${config.suff}\``);
+	else if(command && !command.help.reqPerms.every(perm => msg.member.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'You do not have the following permissions: ' + `\`${command.help.reqPerms.join(' ')}`);
+	else if(command && !command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(', ') + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(' ')}${config.suff}\``);
 });
 // #endregion
 
@@ -290,7 +279,7 @@ bot.on('message', async msg => {
 
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
-	if(msg.channel.name != 'node-network') return;
+	if(!msg.channel.name.startsWith("node-")) return;
 
 	// creates new node network message
 	const embed = new MessageEmbed({
@@ -307,33 +296,106 @@ bot.on('message', async msg => {
 	});
 	const attachment = msg.attachments.first();
 	if(attachment) embed.setImage(attachment.url);
-	// end
 
-	// sending
-	bot.guilds.cache.filter(g => g != msg.guild && g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.find(c => c.name == 'node-network').send(embed));
-	// end
+	if(msg.channel.name == "node-network") {
+		bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach(c => c.send(embed)));
+	} else {
+		bot.channels.cache.filter(c => c.name == msg.channel.name && c.topic == msg.channel.topic && c != msg.channel).array().forEach(c => c.send(embed));
+	}
+
 });
+
+bot.on('channelCreate', async channel => {
+	if(channel.type != "text") return;
+	if(channel.name != "node-network") return;
+	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 1) return;
+	function getDate() {
+		const today = new Date();
+		const dd = String(today.getDate()).padStart(2, '0');
+		const mm = String(today.getMonth() + 1).padStart(2, '0');
+		const yyyy = today.getFullYear();
+
+		return `${mm}/${dd}/${yyyy}`;
+	}
+	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+		try {
+			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
+			let message = await pinned.first();
+			if(message.author.id == bot.user.id) {
+				const updatedEmbed = new Discord.MessageEmbed({
+					title: `Welcome to the Node Network, ${g.name}.`,
+					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
+					color: 0x07592b,
+					fields: [
+						{
+							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
+							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+						},
+					],
+				})
+				message.edit(updatedEmbed);
+				if(g.channels.cache.find(c => c.name == 'node-network')) g.channels.cache.find(c => c.name == 'node-network').topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+			}
+		} catch(e) {
+			console.log(e.stack);
+		}
+
+	});
+});
+ 
+bot.on('channelDelete', async channel => {
+	if(channel.type != "text") return;
+	if(channel.name != "node-network") return;
+	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 0) return;
+	function getDate() {
+		const today = new Date();
+		const dd = String(today.getDate()).padStart(2, '0');
+		const mm = String(today.getMonth() + 1).padStart(2, '0');
+		const yyyy = today.getFullYear();
+
+		return `${mm}/${dd}/${yyyy}`;
+	}
+	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+		try {
+			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
+			let message = await pinned.first();
+			if(message.author.id == bot.user.id) {
+				const updatedEmbed = new Discord.MessageEmbed({
+					title: `Welcome to the Node Network, ${g.name}.`,
+					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
+					color: 0x07592b,
+					fields: [
+						{
+							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
+							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+						},
+					],
+				})
+				message.edit(updatedEmbed);
+				if(g.channels.cache.find(c => c.name == 'node-network')) g.channels.cache.find(c => c.name == 'node-network').topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+			}
+		} catch(e) {
+			console.log(e.stack);
+		}
+
+	});
+});
+
+
 // #endregion
 
 // #region determines which token you are using
 // test bot if not in production, defaualts to production -- Hamziniii 🎩
-if(process.env.PRODUCTION != undefined) {
-	if(process.env.PRODUCTION == 'true') {
-		TYPE = 'PRODUCTION';
-		bot.login(process.env.TOKEN);
-	}
+if(process.env.PRODUCTION == "false") {
+	if(!process.env.BOT)
+		console.log("Please set BOT equal to TESTTOKEN, TEST2TOKEN, or TEST3TOKEN in your env file")
+	else if(!!process.env[process.env.BOT])
+		bot.login(process.env[process.env.BOT])
 	else
-	if(process.env.TEST2TOKEN) {
-		TYPE = 'TEST2';
-		bot.login(process.env.TEST2TOKEN);
-	}
-	else {
-		TYPE = 'TEST';
-		bot.login(process.env.TESTTOKEN);
-	}
+		console.log(process.env.BOT + " is not set in your .env file")
 }
 else {
-	TYPE = 'PRODUCTION';
+	console.log('production')
 	bot.login(process.env.TOKEN);
 }
 // #endregion

@@ -104,7 +104,7 @@ module.exports.run = async (bot, msg, args) => {
 						},
 						{
 							name: 'Node Version:',
-							value: `**${info}**`,
+							value: `**[${info}](https://github.com/Cyber-Shores/Node/releases "releases")**`,
 							inline: true,
 						},
 						// {
@@ -156,7 +156,7 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
 	name: 'help',
 	category: 'Tools',
-	reqPerms: ['MANAGE_MESSAGES'],
+	reqPerms: [],
 	description: 'Menu with info about this bot and usage of its commands',
 	usage: `${config.pref}help${config.suff} || ${config.pref}help [command]${config.suff}`,
 	aliases: ['h'],
