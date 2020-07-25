@@ -80,7 +80,7 @@ module.exports.run = async (bot, msg, args) => {
 };
 
 module.exports.help = {
-	name: 'roulette2',
+	name: 'roulette',
 	category: 'Gambling',
 	reqPerms: [],
 	description: 'Roll the Dice with a game of roulette',
