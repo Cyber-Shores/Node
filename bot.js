@@ -254,7 +254,7 @@ bot.on('message', async msg => {
 		await new Promise(resolve => queue.push(new queueMessage(msg, () => queue, qM => {queue.splice(queue.indexOf(qM), 1); resolve();})));
 	}
 	catch (e) {
-		console.log(e);
+		// console.log(e);
 		queue.push(new queueMessage(msg, () => queue, qM => queue.splice(queue.indexOf(qM), 1), true));
 		queueMessage.delete(msg);
 		await msg.react('❌');
