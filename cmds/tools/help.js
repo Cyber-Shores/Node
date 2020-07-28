@@ -36,7 +36,7 @@ module.exports.run = async (bot, msg, args) => {
 	if (!args[0]) {
 		const embed = new MessageEmbed({
 			title: 'Help',
-			description: 'Commands:',
+			description: `To get help on a specific command use \`${config.pref}help [command]${config.suff}\`\n\n**Commands:**`,
 			color: msg.member.displayHexColor,
 		});
 		const categories = [];
