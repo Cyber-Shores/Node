@@ -34,7 +34,7 @@ export const run = class queueMessage {
         await wait.run(this.lifespan)
         // console.log(`Deleting ${this.msg.content} by ${this.msg.author.username} at ${this.msg.createdTimestamp} after ${parseInt(this.secs(this.lifespan)) - parseInt(this.secs(this.last?.lifespan || 0))} Death ${new Date(this.death).getMinutes()} : ${new Date(this.death).getSeconds()} Previous ${new Date(this.last?.death).getMinutes()} : ${new Date(this.last?.death).getSeconds()}`)
         this.update(this)
-        console.log(this.instance().filter(_ => _.msg.author.username == this.msg.author.username).length)
+        // console.log(this.instance().filter(_ => _.msg.author.username == this.msg.author.username).length)
     }
 
     getLifespan(count: number) {
