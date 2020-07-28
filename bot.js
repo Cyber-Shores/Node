@@ -14,10 +14,20 @@ const wait = require('./util/wait').run;
 const queueMessage = require('./util/queueMessage.js').run;
 const Canvas = require('canvas');
 
-const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
+// const DBL = require("dblapi.js");
+// const dbl = new DBL(process.env.DBLTOKEN, { webhookPort: 5000, webhookAuth: 'password'});
 
-// const DBL = require("dblapi.js");  (WIP) cannot finish until bot gets approved on top.gg
-// const dbl = new DBL('', bot);
+// dbl.webhook.on('ready', hook => {
+// 	console.log(`Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
+// });
+// dbl.webhook.on('vote', vote => {
+//  	console.log(`Vote recieved!\nUser: ${vote.user}\nBot: ${vote.bot}\nType ${vote.type}\nisWeekend: ${vote.isWeekend}`);
+// });
+// dbl.webhook.on('error', e => {
+// 	console.log(`ERROR: ${e}`);
+// });
+
+const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
