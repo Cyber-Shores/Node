@@ -12,7 +12,7 @@ const { maxHeaderSize } = require('http');
 // eslint-disable-next-line no-unused-vars
 const wait = require('./util/wait').run;
 const queueMessage = require('./util/queueMessage.js').run;
-const Canvas = require('canvas');
+// const Canvas = require('canvas');
 
 // const DBL = require("dblapi.js");
 // const dbl = new DBL(process.env.DBLTOKEN, { webhookPort: 5000, webhookAuth: 'password'});
@@ -90,6 +90,7 @@ bot.once('ready', () => {
 // #endregion
 
 // #region Canvas join message
+/*
 const applyText = (canvas, text, size) => {
 	const ctx = canvas.getContext('2d');
 	let fontSize = size;
@@ -99,9 +100,11 @@ const applyText = (canvas, text, size) => {
 
 	return ctx.font;
 };
+*/
 // #endregion
 
 // #region the canvas thigny
+/*
 bot.on('guildMemberAdd', async member => {
 	const channel = member.guild.systemChannel;
 	if(!channel) return;
@@ -147,6 +150,7 @@ bot.on('guildMemberAdd', async member => {
 	});
 	channel.send(attachment);
 });
+*/
 // #endregion
 
 // #region Things to do on guild join
