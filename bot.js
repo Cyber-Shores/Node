@@ -287,7 +287,7 @@ bot.on('message', async msg => {
 	else if(command && !command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(', ') + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(' ')}${config.suff}\``);
 });
 // #endregion
-
+//
 // #region  Node Network
 bot.on('message', async msg => {
 
