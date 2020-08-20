@@ -19,13 +19,11 @@ Feedback, bug reports, and comments are not only welcome, but strongly encourage
 > 	- [@Ravenr_#9014](https://github.com/Ravenwulf "All Hail The Raven Hegemon")
 > 	- [@Washi#1131](https://github.com/Washiil "A promising young padawan")
 >   - [@Hamzinii#9746](https://github.com/Hamziniii "An untangible skeleton wearing a top hat...")
->- Inspiration
-> 	- [@Hamzinii#9746](https://github.com/Hamziniii "A floating top hat on a floating turnip...")
 >
 >### Art
 >
 >- Lead Artist
-> 	- @dom#9445
+> 	- @Kal9000#0867
 >- Icons
 > 	- Font Awesome (fontawesome.io)
 > 	- Pixel Perfect Line Icons by [Ricardo Strobel](https://www.facebook.com/ricardo.strobel/about?section=overview&lst=100011383984016%3A591024496%3A1591581376 "UX designer at HBSIS") (iconfinder.com)
