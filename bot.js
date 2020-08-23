@@ -221,6 +221,17 @@ bot.on('message', async msg => {
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
 
+	let argss = msg.content.split(" ");
+	if(argss[0] == "edit") {
+	  try {
+		let message = await msg.channel.messages.fetch(argss[1]);
+		if(!message) msg.reply("ERROR: invalid message");
+		message.edit(argss.slice(2, argss.length).join(" "));
+	  } catch(e) {
+		console.log(e.stack);
+	  }
+	}
+
 	if (msg.content === '<prefix>') {
 		const req = await GuildModel.findOne({ id: msg.guild.id });
 		if (!req) return require('./util/errMsg').run(bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
