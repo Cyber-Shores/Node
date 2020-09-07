@@ -17,7 +17,7 @@ module.exports.run = async (bot, msg, args) => {
 		}
 		catch(e) {
 			m.delete();
-			return require('../../util/errMsg.js').run(bot, msg, true, `Please supply the name of a city.\n\n\`Not all citys are supported, if ${args.join(' ')} is a city, then it is not supported\`\n\nSupported cities: https://www.metaweather.com/map/`);
+			return require('../../util/errMsg.js').run(bot, msg, true, `Please supply the name of a city.\n\n\`Not all cities are supported, if ${args.join(' ')} is a city, then it is not supported\`\n\nSupported cities: https://www.metaweather.com/map/`);
 		}
 	});
 
