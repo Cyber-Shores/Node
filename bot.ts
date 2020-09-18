@@ -1,14 +1,15 @@
 /* eslint-disable no-inline-comments */
 require('dotenv').config();
-const config = require('./config.json');
-const Discord = require('discord.js');
-const { Client, MessageEmbed } = require('discord.js');
-const bot = new Client();
-const fs = require('fs');
-const mongoose = require('mongoose');
-const GuildModel = require('./models/GuildData');
+import config = require('./config.json');
+
+import { Machina, extractClasses, arrify, MachinaFunction, MachinaMessage } from "machina.ts";
+const Bot = new Machina(process.env.TOKEN, "&", {name: "Cyber-Shores", icon: ""})
+
+import fs = require('fs');
+import mongoose = require('mongoose');
+import GuildModel = require('./models/GuildData');
 // eslint-disable-next-line no-unused-vars
-const { maxHeaderSize } = require('http');
+import { maxHeaderSize } from 'http';
 // eslint-disable-next-line no-unused-vars
 const wait = require('./util/wait').run;
 const queueMessage = require('./util/queueMessage.js').run;
@@ -29,9 +30,6 @@ const queueMessage = require('./util/queueMessage.js').run;
 
 const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
-bot.commands = new Discord.Collection();
-bot.aliases = new Discord.Collection();
-
 // #region start of connecting to database
 // process.env.MONGOLINK used to hide password
 mongoose.connect(process.env.MONGOLINK, {
@@ -49,21 +47,18 @@ fs.readdir('./cmds/', (err, folders) => {
 		fs.readdir(`./cmds/${item}`, (err, files) => {
 			if(err) console.error(err);
 
-			const jsfiles = files.filter(f => f.split('.').pop() === 'js');
-			if(jsfiles.length <= 0) {
+			const tsfiles = files.filter(f => f.split('.').pop() === 'ts');
+			if(tsfiles.length <= 0) {
 				console.log(`No commands to load in ${item}!`);
 				return;
 			}
 
-			console.log(`Loading ${jsfiles.length} commands from ${item}!`);
+			console.log(`Loading ${tsfiles.length} commands from ${item}!`);
 
-			jsfiles.forEach((f, i) => {
+			tsfiles.forEach((f, i) => {
 				const props = require(`./cmds/${item}/${f}`);
 				console.log(`${i + 1} ${f}!`);
-				bot.commands.set(props.help.name, props);
-				props.help.aliases.forEach(alias => {
-					bot.aliases.set(alias, props.help.name);
-				});
+				Bot.loadCommands(...(Object.values(props) as MachinaFunction[]));
 			});
 		});
 
@@ -72,10 +67,10 @@ fs.readdir('./cmds/', (err, folders) => {
 // #endregion
 
 // #region Getting stuff prepared for ready
-bot.once('ready', () => {
+Bot.client.once('ready', () => {
 	// first status set for `ready`
-	const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
-	bot.user.setActivity(`For <prefix> in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
+	const CLIENTGUILDS = Bot.client.guilds.cache;
+	Bot.client.user.setActivity(`For <prefix> in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
 	// end
 	// Creating a doc for each guild if one is not already made
 	CLIENTGUILDS.forEach(async guild => {
@@ -105,7 +100,7 @@ const applyText = (canvas, text, size) => {
 
 // #region the canvas thigny
 /*
-bot.on('guildMemberAdd', async member => {
+Bot.client.on('guildMemberAdd', async member => {
 	const channel = member.guild.systemChannel;
 	if(!channel) return;
 	const canvas = Canvas.createCanvas(700, 250);
@@ -154,10 +149,10 @@ bot.on('guildMemberAdd', async member => {
 // #endregion
 
 // #region Things to do on guild join
-bot.on('guildCreate', async joinedGuild => {
+Bot.client.on('guildCreate', async joinedGuild => {
 	// activity set
-	const CLIENTGUILDS = bot.guilds.cache.filter(guild => guild);
-	bot.user.setActivity(`For prefix in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
+	const CLIENTGUILDS = Bot.client.guilds.cache;
+	Bot.client.user.setActivity(`For prefix in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
 	// end
 	// creating a doc for each guild joined while on.
 	const req = await GuildModel.findOne({ id: joinedGuild.id });
@@ -170,7 +165,7 @@ bot.on('guildCreate', async joinedGuild => {
 // #endregion
 
 // #region Stuff to do on guild leave
-bot.on('guildDelete', async joinedGuild => {
+Bot.client.on('guildDelete', async joinedGuild => {
 	// deletes server from db
 	const req = await GuildModel.findOne({ id: joinedGuild.id });
 	if (!req) return;
@@ -183,7 +178,7 @@ bot.on('guildDelete', async joinedGuild => {
 // #endregion
 
 // #region Custom Prefixes
-// bot.on('message', async msg => {
+// Bot.client.on('message', async msg => {
 // 	if(!msg.guild) return;
 // 	if(msg.author.bot) return;
 // 	// rudementary command handler
@@ -210,14 +205,14 @@ bot.on('guildDelete', async joinedGuild => {
 // #endregion
 
 // #region Final ready
-bot.on('ready', async () => {
-	console.log(`${bot.user.username} is online!`);
+Bot.client.on('ready', async () => {
+	console.log(`${Bot.client.user.username} is online!`);
 	console.log(`Prefix hardcoded as ${process.env.PREFIX || "default"}, Suffex hardcoded as ${process.env.SUFFIX || "defualt"}`)
 });
 // #endregion
 
 // #region Primary command identifier
-bot.on('message', async msg => {
+Bot.client.on('message', async msg => {
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
 
@@ -234,8 +229,8 @@ bot.on('message', async msg => {
 
 	if (msg.content === '<prefix>') {
 		const req = await GuildModel.findOne({ id: msg.guild.id });
-		if (!req) return require('./util/errMsg').run(bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
-		const prefixembed = new Discord.MessageEmbed({
+		if (!req) return require('./util/errMsg').run(Bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
+		const prefixembed = new MachinaMessage({
 			title: 'Server Prefix & Suffiix:',
 			description: `Prefix:  ${req.prefix}\nSuffix:  ${req.suffix}\n`,
 			color: msg.member.displayHexColor,
@@ -289,8 +284,8 @@ bot.on('message', async msg => {
 	const cmd = args.shift().toLowerCase();
 
 	let command;
-	if(bot.commands.has(cmd)) {command = bot.commands.get(cmd);}
-	else {command = bot.commands.get(bot.aliases.get(cmd));}
+	if(Bot.client.commands.has(cmd)) {command = Bot.client.commands.get(cmd);}
+	else {command = Bot.client.commands.get(Bot.client.aliases.get(cmd));}
 	console.log(command)
 	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm) && (msg.member.hasPermission(perm) || command.help.name == "help"))) command.run(bot, msg, args, config);
 	// eslint-disable-next-line no-useless-escape
@@ -300,7 +295,7 @@ bot.on('message', async msg => {
 // #endregion
 
 // #region  Node Network
-bot.on('message', async msg => {
+Bot.client.on('message', async msg => {
 
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
@@ -323,14 +318,14 @@ bot.on('message', async msg => {
 	if(attachment) embed.setImage(attachment.url);
 
 	if(msg.channel.name == "node-network") {
-		bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach(c => c.send(embed)));
+		Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach(c => c.send(embed)));
 	} else {
-		bot.channels.cache.filter(c => c.name == msg.channel.name && c.topic == msg.channel.topic && c != msg.channel).array().forEach(c => c.send(embed));
+		Bot.client.channels.cache.filter(c => c.name == msg.channel.name && c.topic == msg.channel.topic && c != msg.channel).array().forEach(c => c.send(embed));
 	}
 
 });
 
-bot.on('channelCreate', async channel => {
+Bot.client.on('channelCreate', async channel => {
 	if(channel.type != "text") return;
 	if(channel.name != "node-network") return;
 	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 1) return;
@@ -342,11 +337,11 @@ bot.on('channelCreate', async channel => {
 
 		return `${mm}/${dd}/${yyyy}`;
 	}
-	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+	Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
 		try {
 			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
 			let message = await pinned.first();
-			if(message.author.id == bot.user.id) {
+			if(message.author.id == Bot.client.user.id) {
 				const updatedEmbed = new Discord.MessageEmbed({
 					title: `Welcome to the Node Network, ${g.name}.`,
 					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
@@ -354,7 +349,7 @@ bot.on('channelCreate', async channel => {
 					fields: [
 						{
 							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
-							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
 						},
 					],
 				})
@@ -368,7 +363,7 @@ bot.on('channelCreate', async channel => {
 	});
 });
  
-bot.on('channelDelete', async channel => {
+Bot.client.on('channelDelete', async channel => {
 	if(channel.type != "text") return;
 	if(channel.name != "node-network") return;
 	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 0) return;
@@ -380,11 +375,11 @@ bot.on('channelDelete', async channel => {
 
 		return `${mm}/${dd}/${yyyy}`;
 	}
-	bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+	Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
 		try {
 			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
 			let message = await pinned.first();
-			if(message.author.id == bot.user.id) {
+			if(message.author.id == Bot.client.user.id) {
 				const updatedEmbed = new Discord.MessageEmbed({
 					title: `Welcome to the Node Network, ${g.name}.`,
 					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
@@ -392,7 +387,7 @@ bot.on('channelDelete', async channel => {
 					fields: [
 						{
 							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
-							value: `\`\`\`js\n${bot.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
 						},
 					],
 				})
@@ -415,12 +410,12 @@ if(process.env.PRODUCTION == "false") {
 	if(!process.env.BOT)
 		console.log("Please set BOT equal to TESTTOKEN, TEST2TOKEN, or TEST3TOKEN in your env file")
 	else if(!!process.env[process.env.BOT])
-		bot.login(process.env[process.env.BOT])
+		Bot.client.login(process.env[process.env.BOT])
 	else
 		console.log(process.env.BOT + " is not set in your .env file")
 }
 else {
 	console.log('production')
-	bot.login(process.env.TOKEN);
+	Bot.client.login(process.env.TOKEN);
 }
 // #endregion

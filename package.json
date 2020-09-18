@@ -26,11 +26,13 @@
     "dotenv": "^8.2.0",
     "fuzzy-search": "^3.2.1",
     "git-repo-info": "^2.1.1",
+    "machina.ts": "^1.0.17",
     "mongoose": "^5.9.19",
     "nodemon": "^2.0.4",
     "random-puppy": "^1.1.0",
     "request": "^2.88.2",
     "snekfetch": "^4.0.4",
+    "ts-node-dev": "^1.0.0-pre.62",
     "typescript": "^3.9.6",
     "urban": "^0.3.2"
   }
