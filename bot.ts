@@ -5,28 +5,16 @@ import config = require('./config.json');
 import { Machina, extractClasses, arrify, MachinaFunction, MachinaMessage } from "machina.ts";
 const Bot = new Machina(process.env.TOKEN, "&", {name: "Cyber-Shores", icon: ""})
 
+import Discord = require('discord.js');
 import fs = require('fs');
 import mongoose = require('mongoose');
 import GuildModel = require('./models/GuildData');
 // eslint-disable-next-line no-unused-vars
 import { maxHeaderSize } from 'http';
+import { TextChannel } from 'discord.js';
 // eslint-disable-next-line no-unused-vars
 const wait = require('./util/wait').run;
 const queueMessage = require('./util/queueMessage.js').run;
-// const Canvas = require('canvas');
-
-// const DBL = require("dblapi.js");
-// const dbl = new DBL(process.env.DBLTOKEN, { webhookPort: 5000, webhookAuth: 'password'});
-
-// dbl.webhook.on('ready', hook => {
-// 	console.log(`Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
-// });
-// dbl.webhook.on('vote', vote => {
-//  	console.log(`Vote recieved!\nUser: ${vote.user}\nBot: ${vote.bot}\nType ${vote.type}\nisWeekend: ${vote.isWeekend}`);
-// });
-// dbl.webhook.on('error', e => {
-// 	console.log(`ERROR: ${e}`);
-// });
 
 const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
@@ -66,6 +54,8 @@ fs.readdir('./cmds/', (err, folders) => {
 });
 // #endregion
 
+Bot.initizalize();
+
 // #region Getting stuff prepared for ready
 Bot.client.once('ready', () => {
 	// first status set for `ready`
@@ -82,70 +72,6 @@ Bot.client.once('ready', () => {
 		// end
 	});
 });
-// #endregion
-
-// #region Canvas join message
-/*
-const applyText = (canvas, text, size) => {
-	const ctx = canvas.getContext('2d');
-	let fontSize = size;
-	do {
-		ctx.font = `${fontSize -= 10}px sans-serif`;
-	} while (ctx.measureText(text).width > canvas.width - 300);
-
-	return ctx.font;
-};
-*/
-// #endregion
-
-// #region the canvas thigny
-/*
-Bot.client.on('guildMemberAdd', async member => {
-	const channel = member.guild.systemChannel;
-	if(!channel) return;
-	const canvas = Canvas.createCanvas(700, 250);
-	const ctx = canvas.getContext('2d');
-
-
-	const background = await Canvas.loadImage('./docs/images/tech-banner.jpg');
-	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-	ctx.strokeStyle = '#74037b';
-	ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-	ctx.fillStyle = '#1c1c21';
-	ctx.fillRect((canvas.width / 2.5) - 10, (canvas.height / 3.5) - 35, canvas.width - (canvas.width / 2.5) - 5, canvas.height - (canvas.height / 3.5) - 50);
-
-	ctx.font = applyText(canvas, `Welcome to ${member.guild.name},`, 38);
-	ctx.fillStyle = '#ffffff';
-	ctx.fillText(`Welcome to ${member.guild.name},`, canvas.width / 2.5, canvas.height / 3.5);
-
-	ctx.font = applyText(canvas, member.displayName, 70);
-	ctx.fillStyle = '#ffffff';
-	ctx.fillText(member.displayName, canvas.width / 2.5, canvas.height / 1.8);
-
-	// ctx.beginPath();
-	// ctx.arc(125, 125, 100, 0, Math.PI*2, true);
-	// ctx.closePath();
-	// ctx.clip();
-
-	const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
-	ctx.drawImage(avatar, 25, 25, 200, 200);
-
-	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.jpg');
-	// eslint-disable-next-line no-unused-vars
-	const embed = new MessageEmbed({
-		title: `Welcome to ${member.guild.name}, ${member.user.username}`,
-		footer: {
-			'text': member.user.username,
-			'icon_url': member.user.displayAvatarURL(),
-		},
-		timestamp: Date.now(),
-		color: 0x07592b,
-	});
-	channel.send(attachment);
-});
-*/
 // #endregion
 
 // #region Things to do on guild join
@@ -183,7 +109,6 @@ Bot.client.on('guildDelete', async joinedGuild => {
 // 	if(msg.author.bot) return;
 // 	// rudementary command handler
 // 	if (msg.content === '<prefix>') {
-
 // 		const req = await GuildModel.findOne({ id: msg.guild.id });
 // 		if (!req) return require('./util/errMsg').run(bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
 // 		const prefixembed = new Discord.MessageEmbed({
@@ -216,16 +141,7 @@ Bot.client.on('message', async msg => {
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
 
-	let argss = msg.content.split(" ");
-	if(argss[0] == "edit") {
-	  try {
-		let message = await msg.channel.messages.fetch(argss[1]);
-		if(!message) msg.reply("ERROR: invalid message");
-		message.edit(argss.slice(2, argss.length).join(" "));
-	  } catch(e) {
-		console.log(e.stack);
-	  }
-	}
+	let command = Bot.evaluateMsg(msg);
 
 	if (msg.content === '<prefix>') {
 		const req = await GuildModel.findOne({ id: msg.guild.id });
@@ -239,14 +155,14 @@ Bot.client.on('message', async msg => {
 				'icon_url': msg.author.displayAvatarURL(),
 			},
 			timestamp: Date.now(),
-		});
+		}, msg);
 		return msg.channel.send(prefixembed);
 	}
 	else if(msg.content === '<prefix reset>') {
-		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('./util/errMsg.js').run(bot, msg, false, 'You do not have proper perms');
+		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('./util/errMsg.js').run(Bot, msg, false, 'You do not have proper perms');
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: '>' } }, { new: true });
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: '<' } }, { new: true });
-		const setprefixembed = await new MessageEmbed({
+		const setprefixembed = await new MachinaMessage({
 			title: 'Prefix Reset!',
 			description: 'Prefix: <\nSuffix: >\n',
 			color: msg.member.displayHexColor,
@@ -255,20 +171,13 @@ Bot.client.on('message', async msg => {
 				'icon_url': msg.author.displayAvatarURL(),
 			},
 			timestamp: Date.now(),
-		});
+		}, msg);
 		return await msg.channel.send(setprefixembed);
 	}
 
 	const req = await GuildModel.findOne({ id: msg.guild.id });
 	if(!!process.env.PREFIX) {req.prefix = process.env.PREFIX;}
 	if(!!process.env.SUFFIX) {req.suffix = process.env.SUFFIX;}
-	let args = '';
-
-	// if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.slice(msg.content.indexOf(req.prefix) + req.prefix.length, msg.content.indexOf(req.suffix)).trim().split(/ +/g);}
-	if(msg.content.includes(req.prefix) && msg.content.includes(req.suffix)) {args = msg.content.match(new RegExp(`(?<=${req.prefix}).+?(?=${req.suffix})`))[0].trim().split(/ +/g)}
-	else {return;}
-
-	// console.log(queue.map(_ => _.msg.author.username))
 	try {
 		// eslint-disable-next-line max-statements-per-line
 		await new Promise(resolve => queue.push(new queueMessage(msg, () => queue, qM => {queue.splice(queue.indexOf(qM), 1); resolve();})));
@@ -281,28 +190,25 @@ Bot.client.on('message', async msg => {
 		return; // Returns if they spam quite a bit
 	}
 
-	const cmd = args.shift().toLowerCase();
+	if(command.reason == "no commands available")
+        return Machina.noCommands(msg, command.extra)
+    else if(command.reason == "permission check passed multiple")
+        return Machina.multipleCommands(msg, arrify(command.value))
 
-	let command;
-	if(Bot.client.commands.has(cmd)) {command = Bot.client.commands.get(cmd);}
-	else {command = Bot.client.commands.get(Bot.client.aliases.get(cmd));}
-	console.log(command)
-	if(command && command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm) && (msg.member.hasPermission(perm) || command.help.name == "help"))) command.run(bot, msg, args, config);
-	// eslint-disable-next-line no-useless-escape
-	else if(command && !command.help.reqPerms.every(perm => msg.member.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'You do not have the following permissions: ' + `\`${command.help.reqPerms.join(' ')}`);
-	else if(command && !command.help.reqPerms.every(perm => msg.guild.me.hasPermission(perm))) require('./util/errMsg.js').run(bot, msg, false, 'This bot does not have proper permissions.' + 'To run this command, either make sure that the bot has these perms: \`' + command.help.reqPerms.join(', ') + '\` or reinvite the bot using the command ' + `\`${config.pref}invitation ${command.help.reqPerms.join(' ')}${config.suff}\``);
+    if(command.value)
+		arrify(command.value).forEach(f => f(Bot, msg));
 });
 // #endregion
 
 // #region  Node Network
 Bot.client.on('message', async msg => {
-
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
 	if(!msg.channel.name.startsWith("node-")) return;
 
+	let msgChannel = msg.channel as TextChannel;
 	// creates new node network message
-	const embed = new MessageEmbed({
+	const embed = new MachinaMessage({
 		author: {
 			name: msg.author.username,
 			icon_url: msg.author.displayAvatarURL(),
@@ -313,20 +219,19 @@ Bot.client.on('message', async msg => {
 			text: msg.guild.name,
 			icon_url: msg.guild.iconURL(),
 		},
-	});
+	}, msg);
 	const attachment = msg.attachments.first();
-	if(attachment) embed.setImage(attachment.url);
+	if(attachment) embed.msg.embeds[0].setImage(attachment.url);
 
 	if(msg.channel.name == "node-network") {
-		Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach(c => c.send(embed)));
+		Bot.client.guilds.cache.array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach((c: TextChannel) => c.send(embed)));
 	} else {
-		Bot.client.channels.cache.filter(c => c.name == msg.channel.name && c.topic == msg.channel.topic && c != msg.channel).array().forEach(c => c.send(embed));
+		Bot.client.channels.cache.filter((c: TextChannel) => c.name == msgChannel.name && c.topic == msgChannel.topic && c != msgChannel).array().forEach((c: TextChannel) => c.send(embed));
 	}
 
 });
 
-Bot.client.on('channelCreate', async channel => {
-	if(channel.type != "text") return;
+Bot.client.on('channelCreate', async (channel: TextChannel) => {
 	if(channel.name != "node-network") return;
 	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 1) return;
 	function getDate() {
@@ -337,9 +242,9 @@ Bot.client.on('channelCreate', async channel => {
 
 		return `${mm}/${dd}/${yyyy}`;
 	}
-	Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+	Bot.client.guilds.cache.array().forEach(async g => {
 		try {
-			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
+			let pinned = await (g.channels.cache.find((c: TextChannel) => c.name == 'node-network') as TextChannel).messages.fetchPinned();
 			let message = await pinned.first();
 			if(message.author.id == Bot.client.user.id) {
 				const updatedEmbed = new Discord.MessageEmbed({
@@ -349,12 +254,12 @@ Bot.client.on('channelCreate', async channel => {
 					fields: [
 						{
 							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
-							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).size}\`\`\``,
 						},
 					],
 				})
 				message.edit(updatedEmbed);
-				if(g.channels.cache.find(c => c.name == 'node-network')) g.channels.cache.find(c => c.name == 'node-network').topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+				if(g.channels.cache.find(c => c.name == 'node-network')) (g.channels.cache.find(c => c.name == 'node-network') as TextChannel).topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
 			}
 		} catch(e) {
 			console.log(e.stack);
@@ -363,7 +268,7 @@ Bot.client.on('channelCreate', async channel => {
 	});
 });
  
-Bot.client.on('channelDelete', async channel => {
+Bot.client.on('channelDelete', async (channel: TextChannel) => {
 	if(channel.type != "text") return;
 	if(channel.name != "node-network") return;
 	if(channel.guild.channels.cache.filter(chn => chn.name == "node-network").size > 0) return;
@@ -375,9 +280,9 @@ Bot.client.on('channelDelete', async channel => {
 
 		return `${mm}/${dd}/${yyyy}`;
 	}
-	Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).array().forEach(async g => {
+	Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).array().forEach(async g => {
 		try {
-			let pinned = await g.channels.cache.find(c => c.name == 'node-network').messages.fetchPinned();
+			let pinned = await (g.channels.cache.find(c => c.name == 'node-network')as TextChannel).messages.fetchPinned();
 			let message = await pinned.first();
 			if(message.author.id == Bot.client.user.id) {
 				const updatedEmbed = new Discord.MessageEmbed({
@@ -387,12 +292,12 @@ Bot.client.on('channelDelete', async channel => {
 					fields: [
 						{
 							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
-							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network')).size}\`\`\``,
+							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).size}\`\`\``,
 						},
 					],
 				})
 				message.edit(updatedEmbed);
-				if(g.channels.cache.find(c => c.name == 'node-network')) g.channels.cache.find(c => c.name == 'node-network').topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+				if(g.channels.cache.find(c => c.name == 'node-network')) (g.channels.cache.find(c => c.name == 'node-network')as TextChannel).topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
 			}
 		} catch(e) {
 			console.log(e.stack);

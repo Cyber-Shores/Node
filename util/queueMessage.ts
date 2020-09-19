@@ -24,7 +24,7 @@ export const run = class queueMessage {
 
         this.last = previous[previous.length - 1]
         this.lifespan = this.getLifespan(previous.length) + (previous[previous.length - 1]?.lifespan|| 0)
-        console.log(this.secs(this.lifespan), this.secs(this.getLifespan(previous.length)), this.secs(previous[previous.length - 1]?.death - new Date().getTime() || 0), this.secs(previous[previous.length - 1]?.lifespan))
+        // console.log(this.secs(this.lifespan), this.secs(this.getLifespan(previous.length)), this.secs(previous[previous.length - 1]?.death - new Date().getTime() || 0), this.secs(previous[previous.length - 1]?.lifespan))
         this.death = new Date().getTime() + this.lifespan
         this.delete()
     }
@@ -32,9 +32,9 @@ export const run = class queueMessage {
     async delete() {
         // console.log(`Added ${this.msg.content} by ${this.msg.author.username} at ${this.msg.createdTimestamp}. Lifespan is ${(this.lifespan / 1000).toFixed(3)}.`)
         await wait.run(this.lifespan)
-        console.log(`Deleting ${this.msg.content} by ${this.msg.author.username} at ${this.msg.createdTimestamp} after ${parseInt(this.secs(this.lifespan)) - parseInt(this.secs(this.last?.lifespan || 0))} Death ${new Date(this.death).getMinutes()} : ${new Date(this.death).getSeconds()} Previous ${new Date(this.last?.death).getMinutes()} : ${new Date(this.last?.death).getSeconds()}`)
+        // console.log(`Deleting ${this.msg.content} by ${this.msg.author.username} at ${this.msg.createdTimestamp} after ${parseInt(this.secs(this.lifespan)) - parseInt(this.secs(this.last?.lifespan || 0))} Death ${new Date(this.death).getMinutes()} : ${new Date(this.death).getSeconds()} Previous ${new Date(this.last?.death).getMinutes()} : ${new Date(this.last?.death).getSeconds()}`)
         this.update(this)
-        console.log(this.instance().filter(_ => _.msg.author.username == this.msg.author.username).length)
+        // console.log(this.instance().filter(_ => _.msg.author.username == this.msg.author.username).length)
     }
 
     getLifespan(count: number) {
