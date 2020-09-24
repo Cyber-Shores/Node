@@ -3,7 +3,7 @@ require('dotenv').config();
 import config = require('./config.json');
 
 import { Machina, extractClasses, arrify, MachinaFunction, MachinaMessage } from "machina.ts";
-const Bot = new Machina(process.env.TOKEN, "&", {name: "Cyber-Shores", icon: ""})
+const Bot = new Machina(process.env.TOKEN, "&")
 
 import Discord = require('discord.js');
 import fs = require('fs');
@@ -14,7 +14,8 @@ import { maxHeaderSize } from 'http';
 import { TextChannel } from 'discord.js';
 // eslint-disable-next-line no-unused-vars
 const wait = require('./util/wait').run;
-const queueMessage = require('./util/queueMessage.js').run;
+import * as qM from './util/queueMessage'
+const queueMessage = qM.run;
 
 const queue = []; // Queue of messages sent EVERYWHERE, it auto deletes after a time though
 
@@ -57,7 +58,7 @@ fs.readdir('./cmds/', (err, folders) => {
 Bot.initizalize();
 
 // #region Getting stuff prepared for ready
-Bot.client.once('ready', () => {
+Bot.client.once('ready', async () => {
 	// first status set for `ready`
 	const CLIENTGUILDS = Bot.client.guilds.cache;
 	Bot.client.user.setActivity(`For <prefix> in ${CLIENTGUILDS.size} servers!`, { type: 'WATCHING' });
@@ -141,7 +142,7 @@ Bot.client.on('message', async msg => {
 	if(msg.author.bot) return;
 	if(msg.channel.type === 'dm') return;
 
-	let command = Bot.evaluateMsg(msg);
+	let command = Bot.evaluateMsg(msg, );
 
 	if (msg.content === '<prefix>') {
 		const req = await GuildModel.findOne({ id: msg.guild.id });
@@ -247,7 +248,7 @@ Bot.client.on('channelCreate', async (channel: TextChannel) => {
 			let pinned = await (g.channels.cache.find((c: TextChannel) => c.name == 'node-network') as TextChannel).messages.fetchPinned();
 			let message = await pinned.first();
 			if(message.author.id == Bot.client.user.id) {
-				const updatedEmbed = new Discord.MessageEmbed({
+				const updatedEmbed = new MachinaMessage({
 					title: `Welcome to the Node Network, ${g.name}.`,
 					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
 					color: 0x07592b,
@@ -257,7 +258,7 @@ Bot.client.on('channelCreate', async (channel: TextChannel) => {
 							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).size}\`\`\``,
 						},
 					],
-				})
+				},null,false)
 				message.edit(updatedEmbed);
 				if(g.channels.cache.find(c => c.name == 'node-network')) (g.channels.cache.find(c => c.name == 'node-network') as TextChannel).topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
 			}
@@ -285,7 +286,7 @@ Bot.client.on('channelDelete', async (channel: TextChannel) => {
 			let pinned = await (g.channels.cache.find(c => c.name == 'node-network')as TextChannel).messages.fetchPinned();
 			let message = await pinned.first();
 			if(message.author.id == Bot.client.user.id) {
-				const updatedEmbed = new Discord.MessageEmbed({
+				const updatedEmbed = new MachinaMessage({
 					title: `Welcome to the Node Network, ${g.name}.`,
 					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
 					color: 0x07592b,
@@ -295,7 +296,7 @@ Bot.client.on('channelDelete', async (channel: TextChannel) => {
 							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).size}\`\`\``,
 						},
 					],
-				})
+				},null,false)
 				message.edit(updatedEmbed);
 				if(g.channels.cache.find(c => c.name == 'node-network')) (g.channels.cache.find(c => c.name == 'node-network')as TextChannel).topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
 			}

@@ -1,5 +1,5 @@
 module.exports.run = async (time) => new Promise(resolve => {
-	console.log('Waiting for: ' + time / 1000);
+	// console.log('Waiting for: ' + time / 1000);
 	setTimeout(() => resolve(time), time);
 });
 module.exports.help = {

@@ -1,5 +1,4 @@
-import { Collection, TextChannel } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { Collection, TextChannel, MessageEmbed } from 'discord.js';
 import ms = require('ms');
 import { machinaDecoratorInfo, MachinaFunction, MachinaFunctionParameters, MachinaMessage } from "machina.ts"
 export const randomNumber: MachinaFunction = machinaDecoratorInfo
@@ -7,8 +6,10 @@ export const randomNumber: MachinaFunction = machinaDecoratorInfo
     ("Tool", "ping", async (params: MachinaFunctionParameters) => {
         const pingingembed = new MessageEmbed({
             title: 'Pinging...',
+            thumbnail: {
+                url: 'https://cdn.discordapp.com/emojis/476877098947182614.gif?v=1'
+            }
         });
-    
         const UPTIME = params.Bot.client.uptime;
 
         let h, m, s;
@@ -19,11 +20,14 @@ export const randomNumber: MachinaFunction = machinaDecoratorInfo
         s < 10 ? s = `0${s}` : s = `${s}`;
         m < 10 ? m = `0${m}` : m = `${m}`;
         h < 10 ? h = `0${h}` : h = `${h}`;
+
+        console.log(pingingembed)
+        try{
+            let mes = await params.msg.channel.send(pingingembed)
+            console.log(mes);
+            const ping = mes.createdTimestamp - params.msg.createdTimestamp;
     
-        params.msg.channel.send(pingingembed).then(m => {
-            const ping = m.createdTimestamp - params.msg.createdTimestamp;
-    
-            const pingembed = new MachinaMessage({
+            const pingembed = new MessageEmbed({
                 title: 'Pong',
                 description: `${ping}ms`,
                 fields: [
@@ -38,10 +42,15 @@ export const randomNumber: MachinaFunction = machinaDecoratorInfo
                     'icon_url': params.msg.author.displayAvatarURL(),
                 },
                 timestamp: Date.now(),
-            }, params.msg);
+            });
+
+            console.log(pingembed);
     
             params.msg.channel.send(pingembed);
     
-            m.delete();
-        });
+            mes.delete();
+        }
+        catch(e){
+            console.log(e.stack);
+        }
     });           

@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "mon": "nodemon bot.js",
-    "ts": "npx tsc && node bot.js"
+    "ts": "npx tsc && node bot.js",
+    "run": "npx tsnd --respawn bot.ts"
   },
   "engines": {
     "node": "14.x"
@@ -21,12 +22,12 @@
     "canvas": "^2.6.1",
     "cheerio": "^1.0.0-rc.3",
     "dblapi.js": "^2.4.0",
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.3.1",
     "discord.js-menu": "^1.0.3",
     "dotenv": "^8.2.0",
     "fuzzy-search": "^3.2.1",
     "git-repo-info": "^2.1.1",
-    "machina.ts": "^1.0.17",
+    "machina.ts": "^1.0.19",
     "mongoose": "^5.9.19",
     "nodemon": "^2.0.4",
     "random-puppy": "^1.1.0",

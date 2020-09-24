@@ -1,5 +1,5 @@
 const { MessageEmbed } = module.require('discord.js');
-module.exports.run = async (bot, msg, isWarn, text) => {
+module.exports.run = async (bot: any, msg: { author: { username: any; displayAvatarURL: () => any; }; channel: { send: (arg0: any) => void; }; }, isWarn: any, text: any) => {
 	function genWarn() {
 		if(isWarn) return ['⚠️', 'YELLOW'];
 		return ['❌', 'RED'];

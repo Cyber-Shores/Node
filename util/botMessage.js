@@ -1,15 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultEmbed = exports.BotMessage = void 0;
-const discord_js_1 = require("discord.js");
+export const defaultEmbed = exports.BotMessage = void 0;
+import { MessageEmbed } from "discord.js";
 class BotMessage {
     constructor(msg, embed) {
         this.msg = msg;
-        this.embed = new discord_js_1.MessageEmbed({
-            ...exports.defaultEmbed(this.msg),
+        this.embed = new MessageEmbed({
+            ...defaultEmbed(this.msg),
             ...embed
         });
     }
+    
     /**
      * Sends the message
      * @returns returns the message (Message)
@@ -27,8 +28,8 @@ class BotMessage {
             console.error("cannot edit a message that has not been sent. currently sending the message and then editing it");
             await this.send();
         }
-        this.embed = new discord_js_1.MessageEmbed({
-            ...exports.defaultEmbed(this.msg),
+        this.embed = new MessageEmbed({
+            ...defaultEmbed(this.msg),
             ...embed
         });
         this.sent = await this.sent.edit(this.embed);
@@ -44,9 +45,9 @@ class BotMessage {
             console.error("cannot update a message that has not been sent. currently sending the message and then editing it");
             await this.send();
         }
-        this.embed = new discord_js_1.MessageEmbed({
+        this.embed = new MessageEmbed({
             ...this.sent.embeds[0],
-            ...exports.defaultEmbed(this.msg),
+            ...defaultEmbed(this.msg),
             ...embed
         });
         this.sent = await this.sent.edit(this.embed);
@@ -94,12 +95,13 @@ class BotMessage {
         return t;
     }
 }
-exports.BotMessage = BotMessage;
+const _BotMessage = BotMessage;
+export { _BotMessage as BotMessage };
 /**
  * A basic template for an embed
  * @param msg Message to respond to
  */
-exports.defaultEmbed = (msg) => ({
+export function defaultEmbed(msg) { return ({
     color: msg.member.displayHexColor,
     // author: {
     //     name: msg.member.displayName + "  •  # " + msg.content.split(" ")[1],
@@ -110,4 +112,4 @@ exports.defaultEmbed = (msg) => ({
         "text": msg.author.username,
         "icon_url": msg.author.displayAvatarURL()
     }
-});
+});     }
