@@ -160,7 +160,7 @@ Bot.client.on('message', async msg => {
 		return msg.channel.send(prefixembed);
 	}
 	else if(msg.content === '<prefix reset>') {
-		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('./util/errMsg.js').run(Bot, msg, false, 'You do not have proper perms');
+		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('./util/errMsg.ts').run(Bot, msg, false, 'You do not have proper perms');
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: '>' } }, { new: true });
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: '<' } }, { new: true });
 		const setprefixembed = await new MachinaMessage({

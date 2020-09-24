@@ -10,7 +10,6 @@ class BotMessage {
             ...embed
         });
     }
-    
     /**
      * Sends the message
      * @returns returns the message (Message)
