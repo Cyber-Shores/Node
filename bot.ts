@@ -5,7 +5,7 @@ import config = require('./config.json');
 import { Machina, extractClasses, arrify, MachinaFunction, MachinaMessage } from "machina.ts";
 const Bot = new Machina(process.env.TOKEN, "&")
 
-import Discord = require('discord.js');
+import { MessageEmbed } from 'discord.js';
 import fs = require('fs');
 import mongoose = require('mongoose');
 import GuildModel = require('./models/GuildData');
@@ -147,7 +147,7 @@ Bot.client.on('message', async msg => {
 	if (msg.content === '<prefix>') {
 		const req = await GuildModel.findOne({ id: msg.guild.id });
 		if (!req) return require('./util/errMsg').run(Bot, msg, true, 'Something went wrong while loading your servers prefix/suffix\nPlease report this to our support server: https://discord.gg/GUvk7Qu');
-		const prefixembed = new MachinaMessage({
+		const prefixembed = new MessageEmbed({
 			title: 'Server Prefix & Suffiix:',
 			description: `Prefix:  ${req.prefix}\nSuffix:  ${req.suffix}\n`,
 			color: msg.member.displayHexColor,
@@ -156,14 +156,14 @@ Bot.client.on('message', async msg => {
 				'icon_url': msg.author.displayAvatarURL(),
 			},
 			timestamp: Date.now(),
-		}, msg);
+		});
 		return msg.channel.send(prefixembed);
 	}
 	else if(msg.content === '<prefix reset>') {
 		if(!msg.member.hasPermission('ADMINISTRATOR')) return require('./util/errMsg.ts').run(Bot, msg, false, 'You do not have proper perms');
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { suffix: '>' } }, { new: true });
 		await GuildModel.findOneAndUpdate({ id: msg.guild.id }, { $set: { prefix: '<' } }, { new: true });
-		const setprefixembed = await new MachinaMessage({
+		const setprefixembed = new MessageEmbed({
 			title: 'Prefix Reset!',
 			description: 'Prefix: <\nSuffix: >\n',
 			color: msg.member.displayHexColor,
@@ -172,7 +172,7 @@ Bot.client.on('message', async msg => {
 				'icon_url': msg.author.displayAvatarURL(),
 			},
 			timestamp: Date.now(),
-		}, msg);
+		});
 		return await msg.channel.send(setprefixembed);
 	}
 
@@ -209,7 +209,7 @@ Bot.client.on('message', async msg => {
 
 	let msgChannel = msg.channel as TextChannel;
 	// creates new node network message
-	const embed = new MachinaMessage({
+	const embed = new MessageEmbed({
 		author: {
 			name: msg.author.username,
 			icon_url: msg.author.displayAvatarURL(),
@@ -220,9 +220,9 @@ Bot.client.on('message', async msg => {
 			text: msg.guild.name,
 			icon_url: msg.guild.iconURL(),
 		},
-	}, msg);
+	});
 	const attachment = msg.attachments.first();
-	if(attachment) embed.msg.embeds[0].setImage(attachment.url);
+	if(attachment) embed.setImage(attachment.url);
 
 	if(msg.channel.name == "node-network") {
 		Bot.client.guilds.cache.array().forEach(g => g.channels.cache.filter(c => c.name == 'node-network' && c != msg.channel).array().forEach((c: TextChannel) => c.send(embed)));
@@ -245,22 +245,28 @@ Bot.client.on('channelCreate', async (channel: TextChannel) => {
 	}
 	Bot.client.guilds.cache.array().forEach(async g => {
 		try {
-			let pinned = await (g.channels.cache.find((c: TextChannel) => c.name == 'node-network') as TextChannel).messages.fetchPinned();
-			let message = await pinned.first();
-			if(message.author.id == Bot.client.user.id) {
-				const updatedEmbed = new MachinaMessage({
-					title: `Welcome to the Node Network, ${g.name}.`,
-					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
-					color: 0x07592b,
-					fields: [
-						{
-							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
-							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).size}\`\`\``,
-						},
-					],
-				},null,false)
-				message.edit(updatedEmbed);
-				if(g.channels.cache.find(c => c.name == 'node-network')) (g.channels.cache.find(c => c.name == 'node-network') as TextChannel).topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+			
+			let chan = (g.channels.cache.find((c: TextChannel) => c.name == 'node-network') as TextChannel)
+			if(chan){
+				let pinned = await chan.messages.fetchPinned();
+				if(pinned.size > 0){
+					let message = pinned.first();
+					if(message.author.id == Bot.client.user.id) {
+						const updatedEmbed = new MessageEmbed({
+							title: `Welcome to the Node Network, ${g.name}.`,
+							description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
+							color: 0x07592b,
+							fields: [
+								{
+									name: `Number of servers connected to the Node Network as of ${getDate()}:`,
+									value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network') != undefined).size}\`\`\``,
+								},
+							],
+						})
+						message.edit(updatedEmbed);
+						if(g.channels.cache.find(c => c.name == 'node-network')) (g.channels.cache.find(c => c.name == 'node-network') as TextChannel).topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
+					}
+				}
 			}
 		} catch(e) {
 			console.log(e.stack);
@@ -281,22 +287,22 @@ Bot.client.on('channelDelete', async (channel: TextChannel) => {
 
 		return `${mm}/${dd}/${yyyy}`;
 	}
-	Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).array().forEach(async g => {
+	Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network') != undefined).array().forEach(async g => {
 		try {
 			let pinned = await (g.channels.cache.find(c => c.name == 'node-network')as TextChannel).messages.fetchPinned();
-			let message = await pinned.first();
+			let message = pinned.first();
 			if(message.author.id == Bot.client.user.id) {
-				const updatedEmbed = new MachinaMessage({
+				const updatedEmbed = new MessageEmbed({
 					title: `Welcome to the Node Network, ${g.name}.`,
 					description: 'The Node Network connects a "network" of servers together through one channel.\nBe friendly to others or risk having your server blacklisted.\nTo start, just say Hi! (Bots do not work in Node Networks btw)',
 					color: 0x07592b,
 					fields: [
 						{
 							name: `Number of servers connected to the Node Network as of ${getDate()}:`,
-							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.has(g.channels.cache.find(c => c.name == 'node-network').id)).size}\`\`\``,
+							value: `\`\`\`js\n${Bot.client.guilds.cache.filter(g => g.channels.cache.find(c => c.name == 'node-network') != undefined).size}\`\`\``,
 						},
 					],
-				},null,false)
+				})
 				message.edit(updatedEmbed);
 				if(g.channels.cache.find(c => c.name == 'node-network')) (g.channels.cache.find(c => c.name == 'node-network')as TextChannel).topic = "Welcome to the Node Network v1.1! Say Hi, and be friendly.";
 			}

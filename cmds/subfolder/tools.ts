@@ -91,4 +91,108 @@ export const clear: MachinaFunction = machinaDecoratorInfo
         (params.msg.channel as TextChannel).bulkDelete(amount);
     }
 
-});           
+});
+
+export const embed: MachinaFunction = machinaDecoratorInfo
+({monikers: ["embed"], description: "creates a custom embed based on tag arguments"})
+("Admin-Tool", "embed", async (params: MachinaFunctionParameters) => {
+
+	// const strings = args.join(' ').split('|');
+	if(!params.msg.member.hasPermission('MANAGE_MESSAGES')) return require('../../util/errMsg.ts').run(params.Bot, params.msg, false, 'You do not have proper perms');
+    // if(!strings[0] || !strings[1] || !strings[2]) return require('../../util/errMsg.js').run(bot, msg, true, 'Please fill out all parameters!');
+    let embedArgs = params.msg.content.split(' -').slice(1);
+    console.log(embedArgs);
+    let frame = new MessageEmbed();
+    embedArgs.forEach(arg => {
+        // if(arg.length == 0) return require('../../util/errMsg.ts').run(params.Bot, params.msg, true, `"${arg}" is not a valid argument flag`);
+        try {
+            let input = arg.substring(2, arg.length);
+            console.log(input);
+            console.log(arg.substring(0,2));
+            switch (arg.substring(0,2)) {
+                case 'c ':
+                    frame.setColor(input);
+                    break;
+                case 't ':
+                    frame.setTitle(input);
+                    break;
+                case 'l ':
+                    frame.setURL(input);
+                case 'a ':
+                    let authorArgs = input.split('~');
+                    frame.setAuthor(authorArgs[0] || input, authorArgs[1] || null, authorArgs[2] || null);
+                    break;
+                case 'd ':
+                    frame.setDescription(input);
+                    break;
+                case 'n ':
+                    frame.setThumbnail(input);
+                    break;
+                case 'f ':
+                    let fields = input.split('~');
+                    fields.forEach(field => {
+                        let fieldArgs = field.split(',');
+                        frame.addField(fieldArgs[0] || field || input, fieldArgs[1] || " ", Boolean(fieldArgs[2]) || false);
+                    });
+                    break;
+                case 'i ':
+                    frame.setImage(input);
+                    break;
+                case 's':
+                    frame.setTimestamp(new Date());
+                    break;
+                case 'o ':
+                    let footerArgs = input.split('~');
+                    frame.setFooter(footerArgs[0], footerArgs[1])
+            }
+            
+        }
+        catch(e){
+            return require('../../util/errMsg.ts').run(params.Bot, params.msg, false, `Something went wrong with this arg: \n \`\`\`${arg}\`\`\``);
+        }
+    });
+    params.msg.channel.send(frame);
+});
+
+
+export const cleardata: MachinaFunction = machinaDecoratorInfo
+({monikers: ["cleardata"], description: "Clears all of your user data that Node is storing."})
+("Tool", "cleardata", async (params: MachinaFunctionParameters) => {
+    const UserModel = require('../../models/UserBio');
+    const m = await params.msg.channel.send('```Locating Data...```');
+	const req = await UserModel.findOne({ id: params.msg.author.id });
+	let nodata = new MessageEmbed({
+		title: 'Data Clear!',
+			description: `No data found on ${params.msg.author.tag}`,
+			footer: {
+				text: `${params.msg.author.username}`,
+				icon_url: `${params.msg.author.displayAvatarURL()}`,
+			},
+			timestamp: new Date(),
+			color: (params.msg.member.displayHexColor),
+		});
+
+	if (!req) {
+		m.delete();
+		return params.msg.channel.send(nodata)
+	}else {
+		m.delete()
+		const m2 = await params.msg.channel.send('```Deleting Data...```');
+		let embed = new MessageEmbed({
+			title: 'Data Cleared!',
+			description: `All of ${params.msg.author.tag}'s data has been deleted!`,
+			footer: {
+				text: `${params.msg.author.username}`,
+				icon_url: `${params.msg.author.displayAvatarURL()}`,
+			},
+			timestamp: new Date(),
+		    color: (params.msg.member.displayHexColor),
+	    });
+
+		await req.deleteOne({ id: params.msg.author.id, fuction(err: any) {
+		    if(err) throw err;
+		}});
+	    m2.delete();
+	    params.msg.channel.send(embed)
+	}
+});

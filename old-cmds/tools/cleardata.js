@@ -40,9 +40,7 @@ module.exports.run = async (bot, msg, args) => {
 	m2.delete();
 	msg.channel.send(embed)
 	
-}
-
-
+	}
 };
 
 module.exports.help = {
