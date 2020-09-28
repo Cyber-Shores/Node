@@ -17,7 +17,6 @@ module.exports.run = async (bot, msg) => {
 			channel = await msg.guild.channels.create('node-network', {
 				type: 'text',
 				topic: 'Welcome to the Node Network v1.0! Say Hi, and be friendly.',
-				nsfw: true,
 				reason: 'For connection to the Node Network',
 
 			});
