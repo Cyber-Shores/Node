@@ -6,16 +6,13 @@
   "directories": {
     "doc": "docs"
   },
-    "engines": {
+  "engines": {
     "node": "14.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "mon": "nodemon bot.js",
     "ts": "npx tsc && node bot.js"
-  },
-  "engines": {
-    "node": "14.x"
   },
   "author": "Cyber Shores",
   "license": "MIT",
@@ -28,11 +25,16 @@
     "dotenv": "^8.2.0",
     "git-repo-info": "^2.1.1",
     "mongoose": "^5.9.19",
+    "node-fetch": "^2.6.1",
     "nodemon": "^2.0.4",
     "random-puppy": "^1.1.0",
     "request": "^2.88.2",
+    "require_optional": "^1.0.1",
     "snekfetch": "^4.0.4",
     "typescript": "^3.9.6",
     "urban": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.2"
   }
 }
