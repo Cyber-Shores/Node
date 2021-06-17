@@ -91,9 +91,9 @@ module.exports.run = async (bot, msg, args) => {
 					color: '#07592b',
 					url: 'https://github.com/Cyber-Shores/Node',
 					fields: [
-						{
+						{ // 265499320894095371 Ravenr_, 568087768530419732 Washi, 393247221505851412 Hamziniii
 							name: 'Developers:',
-							value: `\`\`\`${bot.users.cache.get('265499320894095371').tag}\n${bot.users.cache.get('568087768530419732').tag}\n${bot.users.cache.get('393247221505851412').tag}\`\`\``,
+							value: `\`\`\`${bot.users.cache.get('265499320894095371')?.tag || 'Ravenr_'}\n${bot.users.cache.get('568087768530419732')?.tag || 'Washi'}\n${bot.users.cache.get('393247221505851412')?.tag || 'Hamziniii'}\`\`\``,
 							inline: true,
 							// (Each page can only have 20 reactions, though. Discord's fault.)
 						},
@@ -156,7 +156,7 @@ module.exports.run = async (bot, msg, args) => {
 module.exports.help = {
 	name: 'help',
 	category: 'Tools',
-	reqPerms: [],
+	reqPerms: ['MANAGE_MESSAGES'],
 	description: 'Menu with info about this bot and usage of its commands',
 	usage: `${config.pref}help${config.suff} || ${config.pref}help [command]${config.suff}`,
 	aliases: ['h'],
