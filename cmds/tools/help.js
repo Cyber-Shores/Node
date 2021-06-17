@@ -93,7 +93,8 @@ module.exports.run = async (bot, msg, args) => {
 					fields: [
 						{ // 265499320894095371 Ravenr_, 568087768530419732 Washi, 393247221505851412 Hamziniii
 							name: 'Developers:',
-							value: `\`\`\`${bot.users.cache.get('265499320894095371')?.tag || 'Ravenr_'}\n${bot.users.cache.get('568087768530419732')?.tag || 'Washi'}\n${bot.users.cache.get('393247221505851412')?.tag || 'Hamziniii'}\`\`\``,
+							// value: `\`\`\`${bot.users.cache.get('265499320894095371')?.tag || 'Ravenr_'}\n${bot.users.cache.get('568087768530419732')?.tag || 'Washi'}\n${bot.users.cache.get('393247221505851412')?.tag || 'Hamziniii'}\`\`\``,
+							value: `\`\`\`\n${'Ravenr_\n' + (bot.users.cache.get('568087768530419732')?.tag || 'Washi')}\n${bot.users.cache.get('393247221505851412')?.tag || 'Hamziniii'}\`\`\``, //idk why ravenr_ was being cut off, so i have to do this weird hacky type thing
 							inline: true,
 							// (Each page can only have 20 reactions, though. Discord's fault.)
 						},
