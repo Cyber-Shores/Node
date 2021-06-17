@@ -38,7 +38,7 @@ module.exports.run = async (bot, msg, args) => {
         //             })
         const channel = msg.member.voice.channel || msg.mentions.channels.first() || msg.guild.channels.cache.get(args[0]);
         if (!channel || channel.type !== "voice")
-            return msg.channel.send("❌ | Must join a channel first! Directions here: https://imgur.com/Pea0Wi2");
+            return msg.channel.send("❌ | Must join a channel first! Directions here: <https://imgur.com/Pea0Wi2>");
         if (!channel.permissionsFor(msg.guild.me).has("CREATE_INSTANT_INVITE"))
             return msg.channel.send("❌ | I need `CREATE_INSTANT_INVITE` permission");
         fetch(`https://discord.com/api/v8/channels/${channel.id}/invites`, {
